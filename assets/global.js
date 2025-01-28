@@ -1193,7 +1193,7 @@ class BulkAdd extends HTMLElement {
   constructor() {
     super();
     this.queue = [];
-    this.requestStarted = false;
+    this.setRequestStarted(false);
     this.ids = [];
   }
 
@@ -1211,7 +1211,7 @@ class BulkAdd extends HTMLElement {
   }
 
   sendRequest(queue) {
-    this.requestStarted = true;
+    this.setRequestStarted(true);
     const items = {};
     queue.forEach((queueItem) => {
       items[parseInt(queueItem.id)] = queueItem.quantity;
@@ -1219,6 +1219,10 @@ class BulkAdd extends HTMLElement {
     this.queue = this.queue.filter((queueElement) => !queue.includes(queueElement));
     const quickBulkElement = this.closest('quick-order-list') || this.closest('quick-add-bulk');
     quickBulkElement.updateMultipleQty(items);
+  }
+
+  setRequestStarted(requestStarted) {
+    this._requestStarted = requestStarted;
   }
 
   resetQuantityInput(id) {
@@ -1247,15 +1251,8 @@ class BulkAdd extends HTMLElement {
     } else {
       event.target.setCustomValidity('');
       event.target.reportValidity();
+      event.target.setAttribute('value', inputValue);
       this.startQueue(index, inputValue);
-    }
-  }
-
-  getSectionsUrl() {
-    if (window.pageNumber) {
-      return `${window.location.pathname}?page=${window.pageNumber}`;
-    } else {
-      return `${window.location.pathname}`;
     }
   }
 

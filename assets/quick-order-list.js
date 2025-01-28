@@ -1,88 +1,36 @@
-if (!customElements.get('quick-order-list-remove-button')) {
-  customElements.define(
-    'quick-order-list-remove-button',
-    class QuickOrderListRemoveButton extends BulkAdd {
-      constructor() {
-        super();
-        this.addEventListener('click', (event) => {
-          event.preventDefault();
-          this.startQueue(this.dataset.index, 0);
-        });
-      }
-    }
-  );
-}
-
-if (!customElements.get('quick-order-list-remove-all-button')) {
-  customElements.define(
-    'quick-order-list-remove-all-button',
-    class QuickOrderListRemoveAllButton extends HTMLElement {
-      constructor() {
-        super();
-        this.quickOrderList = this.closest('quick-order-list');
-        const allVariants = this.quickOrderList.querySelectorAll('[data-quantity-variant-id]');
-        const items = {};
-        let hasVariantsInCart = false;
-
-        allVariants.forEach((variant) => {
-          const cartQty = parseInt(variant.dataset.cartQuantity);
-          if (cartQty > 0) {
-            hasVariantsInCart = true;
-            items[parseInt(variant.dataset.quantityVariantId)] = 0;
-          }
-        });
-
-        if (!hasVariantsInCart) {
-          this.classList.add('hidden');
-        }
-
-        this.actions = {
-          confirm: 'confirm',
-          remove: 'remove',
-          cancel: 'cancel',
-        };
-
-        this.addEventListener('click', (event) => {
-          event.preventDefault();
-          if (this.dataset.action === this.actions.confirm) {
-            this.toggleConfirmation(false, true);
-          } else if (this.dataset.action === this.actions.remove) {
-            this.quickOrderList.updateMultipleQty(items);
-            this.toggleConfirmation(true, false);
-          } else if (this.dataset.action === this.actions.cancel) {
-            this.toggleConfirmation(true, false);
-          }
-        });
-      }
-
-      toggleConfirmation(showConfirmation, showInfo) {
-        this.quickOrderList
-          .querySelector('.quick-order-list-total__confirmation')
-          .classList.toggle('hidden', showConfirmation);
-        this.quickOrderList.querySelector('.quick-order-list-total__info').classList.toggle('hidden', showInfo);
-      }
-    }
-  );
-}
-
 if (!customElements.get('quick-order-list')) {
   customElements.define(
     'quick-order-list',
     class QuickOrderList extends BulkAdd {
+      cartUpdateUnsubscriber = undefined;
+
+      sectionsToRender = [
+        {
+          id: 'cart-icon-bubble',
+          section: 'cart-icon-bubble',
+          selector: '.shopify-section',
+        },
+        {
+          id: `quick-order-list-live-region-text-${this.dataset.productId}`,
+          section: 'cart-live-region-text',
+          selector: '.shopify-section',
+        },
+        {
+          id: 'CartDrawer',
+          selector: '#CartDrawer',
+          section: 'cart-drawer',
+        },
+      ];
+
       constructor() {
         super();
         this.cart = document.querySelector('cart-drawer');
         this.quickOrderListId = `${this.dataset.section}-${this.dataset.productId}`;
-        this.defineInputsAndQuickOrderTable();
 
-        this.variantItemStatusElement = document.getElementById('shopping-cart-variant-item-status');
-        const form = this.querySelector('form');
-        this.inputFieldHeight = this.querySelector('.variant-item__quantity-wrapper').offsetHeight;
-        this.isListInsideModal = document.querySelector('.quick-add-bulk');
+        this.variantItemStatusElement = this.querySelector('#shopping-cart-variant-item-status');
+        this.isListInsideModal = this.closest('bulk-modal');
+
         this.stickyHeaderElement = document.querySelector('sticky-header');
-        this.getTableHead();
-        this.getTotalBar();
-
         if (this.stickyHeaderElement) {
           this.stickyHeader = {
             height: this.stickyHeaderElement.offsetHeight,
@@ -90,62 +38,83 @@ if (!customElements.get('quick-order-list')) {
           };
         }
 
-        if (this.getTotalBar()) {
-          this.totalBarPosition = window.innerHeight - this.getTotalBar().offsetHeight;
+        this.totalBar = this.dataset.section;
+        if (this.totalBar) {
+          this.totalBarPosition = window.innerHeight - this.totalBar.offsetHeight;
 
           window.addEventListener('resize', () => {
-            this.totalBarPosition = window.innerHeight - this.getTotalBar().offsetHeight;
+            this.totalBarPosition = window.innerHeight - this.totalBar.offsetHeight;
             this.stickyHeader.height = this.stickyHeaderElement ? this.stickyHeaderElement.offsetHeight : 0;
           });
         }
 
-        const pageParams = new URLSearchParams(window.location.search);
-        window.pageNumber = decodeURIComponent(pageParams.get('page') || '');
-        form.addEventListener('submit', this.onSubmit.bind(this));
-        this.addMultipleDebounce();
-      }
+        this.querySelector('form').addEventListener('submit', (event) => event.preventDefault());
 
-      cartUpdateUnsubscriber = undefined;
-
-      onSubmit(event) {
-        event.preventDefault();
+        this.pageNumber = '';
       }
 
       connectedCallback() {
-        this.cartUpdateUnsubscriber = subscribe(PUB_SUB_EVENTS.cartUpdate, (event) => {
-          const variantIds = [];
-          this.querySelectorAll('.variant-item').forEach((item) => {
-            variantIds.push(parseInt(item.dataset.variantId));
-          });
-          if (
-            event.source === this.quickOrderListId ||
-            !event.cartData.items?.some((element) => variantIds.includes(element.variant_id))
-          ) {
-            return;
-          }
-          // If its another section that made the update
-          this.refresh().then(() => {
-            this.defineInputsAndQuickOrderTable();
-            this.addMultipleDebounce();
-          });
+        this.cartUpdateUnsubscriber = subscribe(PUB_SUB_EVENTS.cartUpdate, async (event) => {
+          // skip if cart event was triggered by this section
+          if (event.source === this.quickOrderListId) return;
+
+          this.toggleLoading(true);
+          await this.refresh();
+          this.toggleLoading(false);
         });
-        this.sectionId = this.dataset.section;
+
+        this.initEventListeners();
       }
 
       disconnectedCallback() {
         this.cartUpdateUnsubscriber?.();
       }
 
-      defineInputsAndQuickOrderTable() {
+      initEventListeners() {
+        this.querySelectorAll('.pagination__item').forEach((link) => {
+          link.addEventListener('click', async (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const url = new URL(event.currentTarget.href);
+            this.pageNumber = url.searchParams.get('page') || '1';
+
+            this.toggleTableLoading(true);
+            await this.refresh();
+            this.toggleTableLoading(false);
+          });
+        });
+
         this.allInputsArray = Array.from(this.querySelectorAll('input[type="number"]'));
-        this.quickOrderListTable = this.querySelector('.quick-order-list__table');
-        this.quickOrderListTable.addEventListener('focusin', this.switchVariants.bind(this));
+        this.querySelector('.quick-order-list__table').addEventListener('focusin', this.switchVariants.bind(this));
+
+        this.querySelectorAll('quantity-input').forEach((qty) => {
+          const debouncedOnChange = debounce(this.onChange.bind(this), 100);
+          qty.addEventListener('change', debouncedOnChange);
+        });
+
+        this.querySelectorAll('.quick-order-list-remove-button').forEach((button) => {
+          button.addEventListener('click', (event) => {
+            event.preventDefault();
+            this.toggleLoading(true);
+            this.startQueue(button.dataset.index, 0);
+          });
+        });
+      }
+
+      get currentPage() {
+        return this.querySelector('.pagination-wrapper').dataset.page;
+      }
+
+      get cartVariantsForProduct() {
+        return JSON.parse(this.querySelector('[data-cart-contents]')?.innerHTML || '[]');
       }
 
       onChange(event) {
         const inputValue = parseInt(event.target.value);
         this.cleanErrorMessageOnType(event);
         if (inputValue == 0) {
+          event.target.setAttribute('value', inputValue);
           this.startQueue(event.target.dataset.index, inputValue);
         } else {
           this.validateQuantity(event);
@@ -153,93 +122,99 @@ if (!customElements.get('quick-order-list')) {
       }
 
       cleanErrorMessageOnType(event) {
-        event.target.addEventListener('keydown', () => {
+        const handleKeydown = () => {
           event.target.setCustomValidity(' ');
           event.target.reportValidity();
-        });
+          event.target.removeEventListener('keydown', handleKeydown);
+        };
+
+        event.target.addEventListener('keydown', handleKeydown);
       }
 
       validateInput(target) {
+        const targetValue = parseInt(target.value);
+        const targetMin = parseInt(target.dataset.min);
+        const targetStep = parseInt(target.step);
+
         if (target.max) {
           return (
-            parseInt(target.value) == 0 ||
-            (parseInt(target.value) >= parseInt(target.dataset.min) &&
-              parseInt(target.value) <= parseInt(target.max) &&
-              parseInt(target.value) % parseInt(target.step) == 0)
+            targetValue == 0 ||
+            (targetValue >= targetMin && targetValue <= parseInt(target.max) && targetValue % targetStep == 0)
           );
         } else {
-          return (
-            parseInt(target.value) == 0 ||
-            (parseInt(target.value) >= parseInt(target.dataset.min) &&
-              parseInt(target.value) % parseInt(target.step) == 0)
-          );
+          return targetValue == 0 || (targetValue >= targetMin && targetValue % targetStep == 0);
         }
       }
 
-      refresh() {
-        return new Promise((resolve, reject) => {
-          fetch(`${this.getSectionsUrl()}?section_id=${this.sectionId}`)
-            .then((response) => response.text())
-            .then((responseText) => {
-              const html = new DOMParser().parseFromString(responseText, 'text/html');
-              const sourceQty = html.querySelector(`#${this.quickOrderListId}`);
-              if (sourceQty) {
-                this.innerHTML = sourceQty.innerHTML;
+      toggleTableLoading(enable) {
+        this.querySelector('.quick-order-list__table').classList.toggle(
+          'quick-order-list__container--disabled',
+          enable
+        );
+        this.toggleLoading(enable);
+      }
+
+      async refresh() {
+        const url = this.dataset.url || window.location.pathname;
+        const currentPage = this.pageNumber;
+
+        return fetch(`${url}?section_id=${this.dataset.section}${currentPage ? `&page=${currentPage}` : ''}`)
+          .then((response) => response.text())
+          .then((responseText) => {
+            const html = new DOMParser().parseFromString(responseText, 'text/html');
+            const responseQuickOrderList = html.querySelector(`#${this.quickOrderListId}`);
+
+            if (!responseQuickOrderList) {
+              return;
+            }
+
+            // handle race condition between a page switch and a refetch post-quantity bump
+            if (currentPage === this.pageNumber) {
+              const focusedElement = document.activeElement;
+              let target = focusedElement?.dataset?.target;
+              if (target?.includes('remove')) {
+                target = focusedElement.closest('quantity-popover')?.querySelector('[data-target*="increment-"]')
+                  ?.dataset.target;
               }
-              resolve();
-            })
-            .catch((e) => {
-              console.error(e);
-              reject(e);
-            });
-        });
-      }
 
-      getSectionsToRender() {
-        return [
-          {
-            id: this.quickOrderListId,
-            section: document.getElementById(this.quickOrderListId).dataset.section,
-            selector: `#${this.quickOrderListId} .js-contents`,
-          },
-          {
-            id: 'cart-icon-bubble',
-            section: 'cart-icon-bubble',
-            selector: '.shopify-section',
-          },
-          {
-            id: `quick-order-list-live-region-text-${this.dataset.productId}`,
-            section: 'cart-live-region-text',
-            selector: '.shopify-section',
-          },
-          {
-            id: `quick-order-list-total-${this.dataset.productId}-${this.dataset.section}`,
-            section: document.getElementById(this.quickOrderListId).dataset.section,
-            selector: `#${this.quickOrderListId} .quick-order-list__total`,
-          },
-          {
-            id: 'CartDrawer',
-            selector: '#CartDrawer',
-            section: 'cart-drawer',
-          },
-        ];
-      }
+              const contents = responseQuickOrderList.querySelector('.js-contents');
+              if (contents) {
+                // skip variants that are queued for update
+                this.queue.forEach(({ id }) => {
+                  contents.querySelector(`.js-contents #Variant-${id}`).innerHTML = this.querySelector(
+                    `.js-contents #Variant-${id}`
+                  ).innerHTML;
+                });
 
-      addMultipleDebounce() {
-        this.querySelectorAll('quantity-input').forEach((qty) => {
-          const debouncedOnChange = debounce((event) => {
-            this.onChange(event);
-          }, 100);
-          qty.addEventListener('change', debouncedOnChange.bind(this));
-        });
+                this.querySelector('.js-contents').innerHTML = contents.innerHTML;
+              }
+
+              const pagination = responseQuickOrderList.querySelector('.js-paginate');
+              if (pagination) this.querySelector('.js-paginate').innerHTML = pagination.innerHTML;
+
+              const total = responseQuickOrderList.querySelector('.quick-order-list__total');
+              if (total) this.querySelector('.quick-order-list__total').innerHTML = total.innerHTML;
+
+              const newFocusTarget = this.querySelector(`[data-target='${target}']`);
+              if (newFocusTarget) {
+                newFocusTarget?.focus();
+              } else {
+                getFocusableElements(this)?.[0]?.focus();
+              }
+
+              this.initEventListeners();
+            }
+          })
+          .catch((e) => {
+            console.error(e);
+          });
       }
 
       renderSections(parsedState, ids) {
-        this.ids.push(ids);
         const intersection = this.queue.filter((element) => ids.includes(element.id));
         if (intersection.length !== 0) return;
 
-        this.getSectionsToRender().forEach((section) => {
+        this.sectionsToRender.forEach((section) => {
           const sectionElement = document.getElementById(section.id);
           if (
             sectionElement &&
@@ -258,32 +233,12 @@ if (!customElements.get('quick-order-list')) {
               ? sectionElement.querySelector(section.selector)
               : sectionElement;
           if (elementToReplace) {
-            if (section.selector === `#${this.quickOrderListId} .js-contents` && this.ids.length > 0) {
-              this.ids.flat().forEach((i) => {
-                elementToReplace.querySelector(`#Variant-${i}`).innerHTML = this.getSectionInnerHTML(
-                  parsedState.sections[section.section],
-                  `#Variant-${i}`
-                );
-              });
-            } else {
-              elementToReplace.innerHTML = this.getSectionInnerHTML(
-                parsedState.sections[section.section],
-                section.selector
-              );
-            }
+            elementToReplace.innerHTML = this.getSectionInnerHTML(
+              parsedState.sections[section.section],
+              section.selector
+            );
           }
         });
-        this.defineInputsAndQuickOrderTable();
-        this.addMultipleDebounce();
-        this.ids = [];
-      }
-
-      getTableHead() {
-        return document.querySelector('.quick-order-list__table thead');
-      }
-
-      getTotalBar() {
-        return this.querySelector('.quick-order-list__total');
       }
 
       scrollQuickOrderListTable() {
@@ -291,8 +246,9 @@ if (!customElements.get('quick-order-list')) {
         const inputBottomBorder = this.variantListInput.getBoundingClientRect().bottom;
 
         if (this.isListInsideModal) {
-          const totalBarCrossesInput = inputBottomBorder > this.getTotalBar().getBoundingClientRect().top;
-          const tableHeadCrossesInput = inputTopBorder < this.getTableHead().getBoundingClientRect().bottom;
+          const totalBarCrossesInput = inputBottomBorder > this.totalBar.getBoundingClientRect().top;
+          const tableHeadCrossesInput =
+            inputTopBorder < this.querySelector('.quick-order-list__table thead').getBoundingClientRect().bottom;
 
           if (totalBarCrossesInput || tableHeadCrossesInput) {
             this.scrollToCenter();
@@ -301,7 +257,8 @@ if (!customElements.get('quick-order-list')) {
           const stickyHeaderBottomBorder =
             this.stickyHeaderElement && this.stickyHeaderElement.getBoundingClientRect().bottom;
           const totalBarCrossesInput = inputBottomBorder > this.totalBarPosition;
-          const inputOutsideOfViewPort = inputBottomBorder < this.inputFieldHeight;
+          const inputOutsideOfViewPort =
+            inputBottomBorder < this.querySelector('.variant-item__quantity-wrapper').offsetHeight;
           const stickyHeaderCrossesInput =
             this.stickyHeaderElement &&
             this.stickyHeader.type !== 'on-scroll-up' &&
@@ -324,7 +281,10 @@ if (!customElements.get('quick-order-list')) {
       }
 
       scrollToCenter() {
-        this.variantListInput.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        this.variantListInput.scrollIntoView({
+          block: 'center',
+          behavior: 'smooth',
+        });
       }
 
       switchVariants(event) {
@@ -369,33 +329,36 @@ if (!customElements.get('quick-order-list')) {
       }
 
       updateMultipleQty(items) {
-        this.querySelector('.variant-remove-total .loading__spinner')?.classList.remove('hidden');
+        this.toggleLoading(true);
         const ids = Object.keys(items);
+        const url = this.dataset.url || window.location.pathname;
 
         const body = JSON.stringify({
           updates: items,
-          sections: this.getSectionsToRender().map((section) => section.section),
-          sections_url: this.dataset.url,
+          sections: this.sectionsToRender.map(({ section }) => section),
+          sections_url: url,
         });
 
         this.updateMessage();
         this.setErrorMessage();
 
         fetch(`${routes.cart_update_url}`, { ...fetchConfig(), ...{ body } })
-          .then((response) => {
-            return response.text();
-          })
-          .then((state) => {
+          .then((response) => response.text())
+          .then(async (state) => {
             const parsedState = JSON.parse(state);
             this.renderSections(parsedState, ids);
-            publish(PUB_SUB_EVENTS.cartUpdate, { source: this.quickOrderListId, cartData: parsedState });
+            publish(PUB_SUB_EVENTS.cartUpdate, {
+              source: this.quickOrderListId,
+              cartData: parsedState,
+            });
+            await this.refresh();
           })
           .catch(() => {
             this.setErrorMessage(window.cartStrings.error);
           })
           .finally(() => {
-            this.querySelector('.variant-remove-total .loading__spinner')?.classList.add('hidden');
-            this.requestStarted = false;
+            this.setRequestStarted(false);
+            this.toggleLoading(false);
           });
       }
 
@@ -452,11 +415,6 @@ if (!customElements.get('quick-order-list')) {
         this.updateLiveRegions(id, message);
       }
 
-      cleanErrors(id) {
-        // this.querySelectorAll('.desktop-row-error').forEach((error) => error.classList.add('hidden'));
-        // this.querySelectorAll(`.variant-item__error-text`).forEach((error) => error.innerHTML = '');
-      }
-
       updateLiveRegions(id, message) {
         const variantItemErrorDesktop = document.getElementById(`Quick-order-list-item-error-desktop-${id}`);
         const variantItemErrorMobile = document.getElementById(`Quick-order-list-item-error-mobile-${id}`);
@@ -477,18 +435,51 @@ if (!customElements.get('quick-order-list')) {
         }, 1000);
       }
 
-      toggleLoading(id, enable) {
-        const quickOrderListItems = this.querySelectorAll(`#Variant-${id} .loading__spinner`);
-        const quickOrderListItem = this.querySelector(`#Variant-${id}`);
+      toggleLoading(loading) {
+        this.variantItemStatusElement.toggleAttribute('aria-hidden', !loading);
+        this.querySelector('.variant-remove-total .loading__spinner')?.classList.toggle('hidden', !loading);
+      }
+    }
+  );
+}
 
-        if (enable) {
-          quickOrderListItem.classList.add('quick-order-list__container--disabled');
-          [...quickOrderListItems].forEach((overlay) => overlay.classList.remove('hidden'));
-          this.variantItemStatusElement.setAttribute('aria-hidden', false);
-        } else {
-          quickOrderListItem.classList.remove('quick-order-list__container--disabled');
-          quickOrderListItems.forEach((overlay) => overlay.classList.add('hidden'));
-        }
+if (!customElements.get('quick-order-list-remove-all-button')) {
+  customElements.define(
+    'quick-order-list-remove-all-button',
+    class QuickOrderListRemoveAllButton extends HTMLElement {
+      constructor() {
+        super();
+        this.quickOrderList = this.closest('quick-order-list');
+
+        this.actions = {
+          confirm: 'confirm',
+          remove: 'remove',
+          cancel: 'cancel',
+        };
+
+        this.addEventListener('click', (event) => {
+          event.preventDefault();
+          if (this.dataset.action === this.actions.confirm) {
+            this.toggleConfirmation(false, true);
+          } else if (this.dataset.action === this.actions.remove) {
+            const items = this.quickOrderList.cartVariantsForProduct.reduce(
+              (acc, variantId) => ({ ...acc, [variantId]: 0 }),
+              {}
+            );
+
+            this.quickOrderList.updateMultipleQty(items);
+            this.toggleConfirmation(true, false);
+          } else if (this.dataset.action === this.actions.cancel) {
+            this.toggleConfirmation(true, false);
+          }
+        });
+      }
+
+      toggleConfirmation(showConfirmation, showInfo) {
+        this.quickOrderList
+          .querySelector('.quick-order-list-total__confirmation')
+          .classList.toggle('hidden', showConfirmation);
+        this.quickOrderList.querySelector('.quick-order-list-total__info').classList.toggle('hidden', showInfo);
       }
     }
   );

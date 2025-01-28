@@ -18,8 +18,6 @@ if (!customElements.get('quick-add-bulk')) {
         this.listenForActiveInput();
         this.listenForKeydown();
         this.lastActiveInputId = null;
-        const pageParams = new URLSearchParams(window.location.search);
-        window.pageNumber = decodeURIComponent(pageParams.get('page') || '');
       }
 
       connectedCallback() {
@@ -55,15 +53,15 @@ if (!customElements.get('quick-add-bulk')) {
 
       listenForActiveInput() {
         if (!this.classList.contains('hidden')) {
-          this.getInput().addEventListener('focusin', (event) => event.target.select());
+          this.getInput()?.addEventListener('focusin', (event) => event.target.select());
         }
         this.isEnterPressed = false;
       }
 
       listenForKeydown() {
-        this.getInput().addEventListener('keydown', (event) => {
+        this.getInput()?.addEventListener('keydown', (event) => {
           if (event.key === 'Enter') {
-            this.getInput().blur();
+            this.getInput()?.blur();
             this.isEnterPressed = true;
           }
         });
@@ -100,6 +98,13 @@ if (!customElements.get('quick-add-bulk')) {
         });
       }
 
+      getSectionsUrl() {
+        const pageParams = new URLSearchParams(window.location.search);
+        const pageNumber = decodeURIComponent(pageParams.get('page') || '');
+
+        return `${window.location.pathname}${pageNumber ? `?page=${pageNumber}` : ''}`;
+      }
+
       updateMultipleQty(items) {
         this.selectProgressBar().classList.remove('hidden');
 
@@ -130,7 +135,7 @@ if (!customElements.get('quick-add-bulk')) {
           })
           .finally(() => {
             this.selectProgressBar().classList.add('hidden');
-            this.requestStarted = false;
+            this.setRequestStarted(false);
           });
       }
 

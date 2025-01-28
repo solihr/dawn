@@ -2019,6 +2019,13 @@ input[type='checkbox'] {
   visibility: hidden;
 }
 
+.quantity__rules-cart .loading__spinner {
+  margin-left: 4px;
+  width: 11px;
+  height: 11px;
+  margin-top: 1px;
+}
+
 /* component-modal */
 .modal__toggle {
   list-style-type: none;

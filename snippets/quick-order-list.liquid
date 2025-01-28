@@ -28,78 +28,83 @@
       method="post"
       id="QuickOrderList"
     >
-      <div class="quick-order-list__container" id="main-variant-items">
-        <div class="js-contents">
-          <table class="quick-order-list__table">
-            <caption class="visually-hidden">
-              {{ 'sections.cart.title' | t }}
-            </caption>
-            <thead>
-              <tr>
-                <th class="caption-with-letter-spacing" scope="col">
-                  {%- if product.has_only_default_variant -%}
-                    {{ 'sections.quick_order_list.product' | t }}
-                  {%- else -%}
-                    {{ 'sections.quick_order_list.variant' | t }}
-                  {%- endif -%}
-                </th>
-                <th class="large-up-hide right caption-with-letter-spacing" scope="col">
-                  {%- if product.has_only_default_variant -%}
-                    {{ 'sections.quick_order_list.product_total' | t }}
-                  {%- else -%}
-                    {{ 'sections.quick_order_list.variant_total' | t }}
-                  {%- endif -%}
-                </th>
-                <th
-                  class="quick-order-list__table-heading--wide small-hide medium-hide caption-with-letter-spacing"
-                  scope="col"
-                >
-                  {{ 'products.product.quantity.label' | t }}
-                </th>
-                <th
-                  class="quick-order-list__table-heading--wide small-hide medium-hide caption-with-letter-spacing"
-                  scope="col"
-                >
-                  {{ 'sections.cart.headings.price' | t }}
-                </th>
-                <th class="small-hide medium-hide right caption-with-letter-spacing" scope="col">
-                  {%- if product.has_only_default_variant -%}
-                    {{ 'sections.quick_order_list.product_total' | t }}
-                  {%- else -%}
-                    {{ 'sections.quick_order_list.variant_total' | t }}
-                  {%- endif -%}
-                </th>
-              </tr>
-            </thead>
+      {% paginate product.variants by section.settings.variants_per_page %}
+        <div class="quick-order-list__container" id="main-variant-items">
+          <div class="js-contents">
+            <table class="quick-order-list__table">
+              <caption class="visually-hidden">
+                {{ 'sections.cart.title' | t }}
+              </caption>
+              <thead>
+                <tr>
+                  <th class="caption-with-letter-spacing" scope="col">
+                    {%- if product.has_only_default_variant -%}
+                      {{ 'sections.quick_order_list.product' | t }}
+                    {%- else -%}
+                      {{ 'sections.quick_order_list.variant' | t }}
+                    {%- endif -%}
+                  </th>
+                  <th class="large-up-hide right caption-with-letter-spacing" scope="col">
+                    {%- if product.has_only_default_variant -%}
+                      {{ 'sections.quick_order_list.product_total' | t }}
+                    {%- else -%}
+                      {{ 'sections.quick_order_list.variant_total' | t }}
+                    {%- endif -%}
+                  </th>
+                  <th
+                    class="quick-order-list__table-heading--wide small-hide medium-hide caption-with-letter-spacing"
+                    scope="col"
+                  >
+                    {{ 'products.product.quantity.label' | t }}
+                  </th>
+                  <th
+                    class="quick-order-list__table-heading--wide small-hide medium-hide caption-with-letter-spacing"
+                    scope="col"
+                  >
+                    {{ 'sections.cart.headings.price' | t }}
+                  </th>
+                  <th class="small-hide medium-hide right caption-with-letter-spacing" scope="col">
+                    {%- if product.has_only_default_variant -%}
+                      {{ 'sections.quick_order_list.product_total' | t }}
+                    {%- else -%}
+                      {{ 'sections.quick_order_list.variant_total' | t }}
+                    {%- endif -%}
+                  </th>
+                </tr>
+              </thead>
 
-            <tbody>
-              {%- if product.has_only_default_variant -%}
-                {%- render 'quick-order-list-row',
-                  item: product,
-                  image: product.featured_media,
-                  sku: product.selected_or_first_available_variant.sku,
-                  variant: product.selected_or_first_available_variant,
-                  show_image: show_image,
-                  show_sku: show_sku,
-                  is_modal: is_modal
-                -%}
-              {%- else -%}
-                {%- for variant in product.variants -%}
+              <tbody>
+                {%- if product.has_only_default_variant -%}
                   {%- render 'quick-order-list-row',
-                    item: variant,
-                    image: variant.image,
-                    sku: variant.sku,
-                    variant: variant,
+                    item: product,
+                    image: product.featured_media,
+                    sku: product.selected_or_first_available_variant.sku,
+                    variant: product.selected_or_first_available_variant,
                     show_image: show_image,
                     show_sku: show_sku,
                     is_modal: is_modal
                   -%}
-                {%- endfor -%}
-              {%- endif -%}
-            </tbody>
-          </table>
+                {%- else -%}
+                  {%- for variant in product.variants -%}
+                    {%- render 'quick-order-list-row',
+                      item: variant,
+                      image: variant.image,
+                      sku: variant.sku,
+                      variant: variant,
+                      show_image: show_image,
+                      show_sku: show_sku,
+                      is_modal: is_modal
+                    -%}
+                  {%- endfor -%}
+                {%- endif -%}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+        <div class="js-paginate">
+          {% render 'pagination', paginate: paginate %}
+        </div>
+      {%- endpaginate -%}
 
       <p
         class="visually-hidden"
@@ -139,8 +144,8 @@
               <div class="variant-remove-total{% if items_in_cart == 0 %} variant-remove-total--empty{% endif %}">
                 {%- render 'loading-spinner' -%}
                 <quick-order-list-remove-all-button
-                  class="no-js-hidden"
                   data-action="confirm"
+                  class="{% if items_in_cart == 0 %}hidden{% endif %}"
                 >
                   <button class="button button--tertiary" type="button">
                     <span class="svg-wrapper">
@@ -281,11 +286,17 @@
             </button>
           </quick-order-list-remove-all-button>
         </div>
+
+        <script type="text/javascript" data-cart-contents>
+          {{ cart | line_items_for: product | map: "variant_id" | json }}
+        </script>
       </div>
     {%- endif -%}
   </quick-order-list>
   <template id="QuickOrderListErrorTemplate-{{ product.id }}">
-    {{ 'icon-error.svg' | inline_asset_content }}
+    <span class="svg-wrapper">
+      {{ 'icon-error.svg' | inline_asset_content }}
+    </span>
     <span class="quick-order-list-error-message caption-large" role="alert"></span>
   </template>
 </div>
