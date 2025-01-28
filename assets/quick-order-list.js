@@ -26,6 +26,7 @@ if (!customElements.get('quick-order-list')) {
         super();
         this.cart = document.querySelector('cart-drawer');
         this.quickOrderListId = `${this.dataset.section}-${this.dataset.productId}`;
+        this.lastInteractionWasKeyboard = false;
 
         this.variantItemStatusElement = this.querySelector('#shopping-cart-variant-item-status');
         this.isListInsideModal = this.closest('bulk-modal');
@@ -49,6 +50,14 @@ if (!customElements.get('quick-order-list')) {
         }
 
         this.querySelector('form').addEventListener('submit', (event) => event.preventDefault());
+
+        document.addEventListener('keydown', () => {
+          this.lastInteractionWasKeyboard = true;
+        });
+
+        document.addEventListener('mousedown', () => {
+          this.lastInteractionWasKeyboard = false;
+        });
 
         this.pageNumber = '';
       }
@@ -171,7 +180,9 @@ if (!customElements.get('quick-order-list')) {
             // handle race condition between a page switch and a refetch post-quantity bump
             if (currentPage === this.pageNumber) {
               const focusedElement = document.activeElement;
+              const wasKeyboardInteraction = this.lastInteractionWasKeyboard;
               let target = focusedElement?.dataset?.target;
+
               if (target?.includes('remove')) {
                 target = focusedElement.closest('quantity-popover')?.querySelector('[data-target*="increment-"]')
                   ?.dataset.target;
@@ -195,11 +206,13 @@ if (!customElements.get('quick-order-list')) {
               const total = responseQuickOrderList.querySelector('.quick-order-list__total');
               if (total) this.querySelector('.quick-order-list__total').innerHTML = total.innerHTML;
 
-              const newFocusTarget = this.querySelector(`[data-target='${target}']`);
-              if (newFocusTarget) {
-                newFocusTarget?.focus();
-              } else {
-                getFocusableElements(this)?.[0]?.focus();
+              if (wasKeyboardInteraction) {
+                const newFocusTarget = this.querySelector(`[data-target='${target}']`);
+                if (newFocusTarget) {
+                  newFocusTarget?.focus();
+                } else {
+                  getFocusableElements(this)?.[0]?.focus();
+                }
               }
 
               this.initEventListeners();
