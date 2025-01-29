@@ -36,11 +36,11 @@ if (!customElements.get('quick-order-list')) {
         document.addEventListener('mousedown', () => {
           this.lastInteractionWasKeyboard = false;
         });
-
-        this.pageNumber = '';
       }
 
       connectedCallback() {
+        this.pageNumber = this.currentPage;
+
         this.cartUpdateUnsubscriber = subscribe(PUB_SUB_EVENTS.cartUpdate, async (event) => {
           // skip if cart event was triggered by this section
           if (event.source === this.id) return;
@@ -83,7 +83,7 @@ if (!customElements.get('quick-order-list')) {
         this.allInputsArray = Array.from(this.querySelectorAll('input[type="number"]'));
 
         this.querySelectorAll('quantity-input').forEach((qty) => {
-          const debouncedOnChange = debounce(this.onChange.bind(this), 100);
+          const debouncedOnChange = debounce(this.onChange.bind(this), 250);
           qty.addEventListener('change', debouncedOnChange);
         });
 
@@ -153,7 +153,7 @@ if (!customElements.get('quick-order-list')) {
           {
             id: 'cart-icon-bubble',
             section: 'cart-icon-bubble',
-            selector: '.cart-count-bubble',
+            selector: '#shopify-section-cart-icon-bubble',
           },
           {
             id: `quick-order-list-live-region-text-${this.dataset.productId}`,
@@ -178,9 +178,8 @@ if (!customElements.get('quick-order-list')) {
 
       async refresh() {
         const url = this.dataset.url || window.location.pathname;
-        const currentPage = this.pageNumber;
 
-        return fetch(`${url}?section_id=${this.dataset.section}${currentPage ? `&page=${currentPage}` : ''}`)
+        return fetch(`${url}?section_id=${this.dataset.section}${this.pageNumber ? `&page=${this.pageNumber}` : ''}`)
           .then((response) => response.text())
           .then((responseText) => {
             const html = new DOMParser().parseFromString(responseText, 'text/html');
@@ -194,27 +193,6 @@ if (!customElements.get('quick-order-list')) {
 
             // handle race condition between a page switch and a refetch post-quantity bump
             // if (currentPage === this.pageNumber) {
-            // const focusedElement = document.activeElement;
-            // let target = focusedElement?.dataset?.target;
-            // if (target?.includes('remove')) {
-            //   target = focusedElement.closest('quantity-popover')?.querySelector('[data-target*="increment-"]')
-            //     ?.dataset.target;
-            // }
-
-            // const pagination = responseQuickOrderList.querySelector('.js-paginate');
-            // if (pagination) this.querySelector('.js-paginate').innerHTML = pagination.innerHTML;
-
-            // const total = responseQuickOrderList.querySelector('.quick-order-list__total');
-            // if (total) this.querySelector('.quick-order-list__total').innerHTML = total.innerHTML;
-
-            // TODO set focus?
-
-            // const newFocusTarget = this.querySelector(`[data-target='${target}']`);
-            // if (newFocusTarget) {
-            //   newFocusTarget?.focus();
-            // } else {
-            //   getFocusableElements(this)?.[0]?.focus();
-            // }
 
             // TODO what actually needs to get bound?
             this.initEventListeners();
@@ -235,6 +213,13 @@ if (!customElements.get('quick-order-list')) {
           const newSection = new DOMParser().parseFromString(sections[section], 'text/html').querySelector(selector);
 
           if (section === this.dataset.section) {
+            const focusedElement = document.activeElement;
+            let target = focusedElement?.dataset?.target;
+            if (target?.includes('remove')) {
+              target = focusedElement.closest('quantity-popover')?.querySelector('[data-target*="increment-"]')
+                ?.dataset.target;
+            }
+
             // if requests are still pending, inject with loading state
             if (this.queue.length > 0) this.toggleLoading(true, newSection);
             this.querySelector('.quick-order-list__total').innerHTML =
@@ -242,7 +227,9 @@ if (!customElements.get('quick-order-list')) {
 
             // update all variants that are not queued for update
             const newTable = newSection.querySelector('.quick-order-list__table');
-            if (newTable) {
+            const shouldUpdateVariants =
+              this.pageNumber === newSection.querySelector('.pagination-wrapper').dataset.page;
+            if (newTable && shouldUpdateVariants) {
               const table = this.querySelector('.quick-order-list__table');
 
               // skip variants that are queued for update
@@ -253,7 +240,12 @@ if (!customElements.get('quick-order-list')) {
 
               table.innerHTML = newTable.innerHTML;
 
-              // TODO check that focus state works correctly
+              const newFocusTarget = this.querySelector(`[data-target='${target}']`);
+              if (newFocusTarget) {
+                newFocusTarget?.focus();
+              } else {
+                getFocusableElements(this)?.[0]?.focus();
+              }
 
               this.initVariantEventListeners();
             }
@@ -262,10 +254,8 @@ if (!customElements.get('quick-order-list')) {
           } else if (section === 'cart-drawer') {
             sectionElement.closest('cart-drawer')?.classList.toggle('is-empty', items.length === 0);
             sectionElement.querySelector(selector).innerHTML = newSection.innerHTML;
-          } else if (section === 'cart-live-region-text') {
+          } else {
             sectionElement.innerHTML = newSection.innerHTML;
-          } else if (section === 'cart-icon-bubble') {
-            sectionElement.querySelector(selector).innerHTML = newSection.innerHTML;
           }
         });
       }
