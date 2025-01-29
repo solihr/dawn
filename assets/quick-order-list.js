@@ -47,12 +47,11 @@ if (!customElements.get('quick-order-list')) {
           // skip if cart event was triggered by this section
           if (event.source === this.id) return;
 
-          this.toggleLoading(true);
+          this.toggleTableLoading(true);
           await this.refresh();
-          this.toggleLoading(false);
+          this.toggleTableLoading(false);
         });
 
-        this.querySelector('.quick-order-list__table').addEventListener('focusin', this.switchVariants.bind(this));
         this.initEventListeners();
       }
 
@@ -76,6 +75,8 @@ if (!customElements.get('quick-order-list')) {
             this.toggleTableLoading(false);
           });
         });
+
+        this.querySelector('.quick-order-list__table').addEventListener('focusin', this.switchVariants.bind(this));
 
         this.initVariantEventListeners();
       }
@@ -179,7 +180,7 @@ if (!customElements.get('quick-order-list')) {
 
       async refresh() {
         const url = this.dataset.url || window.location.pathname;
-        // const currentPage = this.pageNumber;
+        const currentPage = this.pageNumber;
 
         return fetch(`${url}?section_id=${this.dataset.section}${currentPage ? `&page=${currentPage}` : ''}`)
           .then((response) => response.text())
@@ -191,6 +192,8 @@ if (!customElements.get('quick-order-list')) {
               return;
             }
 
+            this.innerHTML = responseQuickOrderList.innerHTML;
+
             // handle race condition between a page switch and a refetch post-quantity bump
             // if (currentPage === this.pageNumber) {
             // const focusedElement = document.activeElement;
@@ -200,11 +203,11 @@ if (!customElements.get('quick-order-list')) {
             //     ?.dataset.target;
             // }
 
-            const pagination = responseQuickOrderList.querySelector('.js-paginate');
-            if (pagination) this.querySelector('.js-paginate').innerHTML = pagination.innerHTML;
+            // const pagination = responseQuickOrderList.querySelector('.js-paginate');
+            // if (pagination) this.querySelector('.js-paginate').innerHTML = pagination.innerHTML;
 
-            const total = responseQuickOrderList.querySelector('.quick-order-list__total');
-            if (total) this.querySelector('.quick-order-list__total').innerHTML = total.innerHTML;
+            // const total = responseQuickOrderList.querySelector('.quick-order-list__total');
+            // if (total) this.querySelector('.quick-order-list__total').innerHTML = total.innerHTML;
 
             // TODO set focus?
 

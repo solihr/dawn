@@ -1208,7 +1208,7 @@ class BulkAdd extends HTMLElement {
       } else {
         clearInterval(interval);
       }
-    }, 1000);
+    }, 250);
   }
 
   sendRequest(queue) {
