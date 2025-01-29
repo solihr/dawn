@@ -6,7 +6,6 @@ if (!customElements.get('quick-order-list')) {
 
       constructor() {
         super();
-        this.variantItemStatusElement = this.querySelector('#shopping-cart-variant-item-status');
         this.isListInsideModal = this.closest('bulk-modal');
 
         this.stickyHeaderElement = document.querySelector('sticky-header');
@@ -28,19 +27,9 @@ if (!customElements.get('quick-order-list')) {
         }
 
         this.querySelector('form').addEventListener('submit', (event) => event.preventDefault());
-
-        document.addEventListener('keydown', () => {
-          this.lastInteractionWasKeyboard = true;
-        });
-
-        document.addEventListener('mousedown', () => {
-          this.lastInteractionWasKeyboard = false;
-        });
       }
 
       connectedCallback() {
-        this.pageNumber = this.currentPage;
-
         this.cartUpdateUnsubscriber = subscribe(PUB_SUB_EVENTS.cartUpdate, async (event) => {
           // skip if cart event was triggered by this section
           if (event.source === this.id) return;
@@ -65,11 +54,8 @@ if (!customElements.get('quick-order-list')) {
 
             const url = new URL(event.currentTarget.href);
 
-            // do we need to set this as a prop anymore?
-            this.pageNumber = url.searchParams.get('page') || '1';
-
             this.toggleTableLoading(true);
-            await this.refresh();
+            await this.refresh(url.searchParams.get('page') || '1');
             this.toggleTableLoading(false);
           });
         });
@@ -96,7 +82,6 @@ if (!customElements.get('quick-order-list')) {
         });
       }
 
-      // is this helpful?
       get currentPage() {
         return this.querySelector('.pagination-wrapper').dataset.page;
       }
@@ -176,10 +161,10 @@ if (!customElements.get('quick-order-list')) {
         this.toggleLoading(enable);
       }
 
-      async refresh() {
+      async refresh(pageNumber = null) {
         const url = this.dataset.url || window.location.pathname;
 
-        return fetch(`${url}?section_id=${this.dataset.section}${this.pageNumber ? `&page=${this.pageNumber}` : ''}`)
+        return fetch(`${url}?section_id=${this.dataset.section}&page=${pageNumber || this.currentPage}`)
           .then((response) => response.text())
           .then((responseText) => {
             const html = new DOMParser().parseFromString(responseText, 'text/html');
@@ -190,13 +175,7 @@ if (!customElements.get('quick-order-list')) {
             }
 
             this.innerHTML = responseQuickOrderList.innerHTML;
-
-            // handle race condition between a page switch and a refetch post-quantity bump
-            // if (currentPage === this.pageNumber) {
-
-            // TODO what actually needs to get bound?
             this.initEventListeners();
-            // }
           })
           .catch((e) => {
             console.error(e);
@@ -225,10 +204,11 @@ if (!customElements.get('quick-order-list')) {
             this.querySelector('.quick-order-list__total').innerHTML =
               newSection.querySelector('.quick-order-list__total').innerHTML;
 
-            // update all variants that are not queued for update
             const newTable = newSection.querySelector('.quick-order-list__table');
+
+            // only update variants if they are from the active page
             const shouldUpdateVariants =
-              this.pageNumber === newSection.querySelector('.pagination-wrapper').dataset.page;
+              this.currentPage === newSection.querySelector('.pagination-wrapper').dataset.page;
             if (newTable && shouldUpdateVariants) {
               const table = this.querySelector('.quick-order-list__table');
 
@@ -249,8 +229,6 @@ if (!customElements.get('quick-order-list')) {
 
               this.initVariantEventListeners();
             }
-
-            return;
           } else if (section === 'cart-drawer') {
             sectionElement.closest('cart-drawer')?.classList.toggle('is-empty', items.length === 0);
             sectionElement.querySelector(selector).innerHTML = newSection.innerHTML;
@@ -442,7 +420,7 @@ if (!customElements.get('quick-order-list')) {
         if (variantItemErrorMobile)
           variantItemErrorMobile.querySelector('.variant-item__error-text').innerHTML = message;
 
-        this.variantItemStatusElement.setAttribute('aria-hidden', true);
+        this.querySelector('#shopping-cart-variant-item-status').setAttribute('aria-hidden', true);
 
         const cartStatus = document.getElementById('quick-order-list-live-region-text');
         cartStatus.setAttribute('aria-hidden', false);
@@ -484,7 +462,6 @@ if (!customElements.get('quick-order-list-remove-all-button')) {
               {}
             );
 
-            // TODO this should pass through the queue, not directly call updateMultipleQty
             this.quickOrderList.updateMultipleQty(items);
             this.toggleConfirmation(true, false);
           } else if (this.dataset.action === this.actions.cancel) {

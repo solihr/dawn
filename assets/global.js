@@ -1221,9 +1221,7 @@ class BulkAdd extends HTMLElement {
     // can this possibly evict items from the queue incorrectly? what if clicking the button quickly and queue doesn't have all the quantities that this.queue has for a variant?
     this.queue = this.queue.filter((queueElement) => !queue.includes(queueElement));
 
-    // TODO shouldnt this just do this.updateMultipleQty(items); ??
-    const quickBulkElement = this.closest('quick-order-list') || this.closest('quick-add-bulk');
-    quickBulkElement.updateMultipleQty(items);
+    this.updateMultipleQty(items);
   }
 
   setRequestStarted(requestStarted) {
