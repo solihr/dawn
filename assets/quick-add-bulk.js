@@ -142,9 +142,9 @@ if (!customElements.get('quick-add-bulk')) {
       getSectionsToRender() {
         return [
           {
-            id: `quick-add-bulk-${this.dataset.id}-${this.closest('.collection-quick-add-bulk').dataset.id}`,
+            id: `quick-add-bulk-${this.dataset.index}-${this.closest('.collection-quick-add-bulk').dataset.id}`,
             section: this.closest('.collection-quick-add-bulk').dataset.id,
-            selector: `#quick-add-bulk-${this.dataset.id}-${this.closest('.collection-quick-add-bulk').dataset.id}`,
+            selector: `#quick-add-bulk-${this.dataset.index}-${this.closest('.collection-quick-add-bulk').dataset.id}`,
           },
           {
             id: 'cart-icon-bubble',
@@ -153,7 +153,7 @@ if (!customElements.get('quick-add-bulk')) {
           },
           {
             id: 'CartDrawer',
-            selector: '#CartDrawer',
+            selector: '.drawer__inner',
             section: 'cart-drawer',
           },
         ];
@@ -164,18 +164,8 @@ if (!customElements.get('quick-add-bulk')) {
         if (intersection.length !== 0) return;
         this.getSectionsToRender().forEach((section) => {
           const sectionElement = document.getElementById(section.id);
-          if (
-            sectionElement &&
-            sectionElement.parentElement &&
-            sectionElement.parentElement.classList.contains('drawer')
-          ) {
-            parsedState.items.length > 0
-              ? sectionElement.parentElement.classList.remove('is-empty')
-              : sectionElement.parentElement.classList.add('is-empty');
-
-            setTimeout(() => {
-              document.querySelector('#CartDrawer-Overlay').addEventListener('click', this.cart.close.bind(this.cart));
-            });
+          if (section.section === 'cart-drawer') {
+            sectionElement.closest('cart-drawer')?.classList.toggle('is-empty', parsedState.items.length.length === 0);
           }
           const elementToReplace =
             sectionElement && sectionElement.querySelector(section.selector)
