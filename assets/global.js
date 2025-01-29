@@ -1199,6 +1199,7 @@ class BulkAdd extends HTMLElement {
 
   startQueue(id, quantity) {
     this.queue.push({ id, quantity });
+
     const interval = setInterval(() => {
       if (this.queue.length > 0) {
         if (!this.requestStarted) {
@@ -1207,16 +1208,20 @@ class BulkAdd extends HTMLElement {
       } else {
         clearInterval(interval);
       }
-    }, 250);
+    }, 1000);
   }
 
   sendRequest(queue) {
     this.setRequestStarted(true);
     const items = {};
+
     queue.forEach((queueItem) => {
       items[parseInt(queueItem.id)] = queueItem.quantity;
     });
+    // can this possibly evict items from the queue incorrectly? what if clicking the button quickly and queue doesn't have all the quantities that this.queue has for a variant?
     this.queue = this.queue.filter((queueElement) => !queue.includes(queueElement));
+
+    // TODO shouldnt this just do this.updateMultipleQty(items); ??
     const quickBulkElement = this.closest('quick-order-list') || this.closest('quick-add-bulk');
     quickBulkElement.updateMultipleQty(items);
   }
