@@ -6,8 +6,6 @@ if (!customElements.get('quick-order-list')) {
 
       constructor() {
         super();
-        // this.cart = document.querySelector('cart-drawer');
-
         this.variantItemStatusElement = this.querySelector('#shopping-cart-variant-item-status');
         this.isListInsideModal = this.closest('bulk-modal');
 
@@ -237,6 +235,8 @@ if (!customElements.get('quick-order-list')) {
           const newSection = new DOMParser().parseFromString(sections[section], 'text/html').querySelector(selector);
 
           if (section === this.dataset.section) {
+            // if requests are still pending, inject with loading state
+            if (this.queue.length > 0) this.toggleLoading(true, newSection);
             this.querySelector('.quick-order-list__total').innerHTML =
               newSection.querySelector('.quick-order-list__total').innerHTML;
 
@@ -246,9 +246,10 @@ if (!customElements.get('quick-order-list')) {
               const table = this.querySelector('.quick-order-list__table');
 
               // skip variants that are queued for update
-              this.queue.forEach(({ id }) => {
-                table.querySelector(`#Variant-${id}`).innerHTML = newTable.querySelector(`#Variant-${id}`).innerHTML;
-              });
+              [...new Set(this.queue.map(({ id }) => id))].forEach(
+                (id) =>
+                  (newTable.querySelector(`#Variant-${id}`).innerHTML = table.querySelector(`#Variant-${id}`).innerHTML)
+              );
 
               table.innerHTML = newTable.innerHTML;
 
@@ -384,8 +385,8 @@ if (!customElements.get('quick-order-list')) {
             this.setErrorMessage(window.cartStrings.error);
           })
           .finally(() => {
+            this.queue.length === 0 && this.toggleLoading(false);
             this.setRequestStarted(false);
-            this.toggleLoading(false);
           });
       }
 
@@ -461,9 +462,9 @@ if (!customElements.get('quick-order-list')) {
         }, 1000);
       }
 
-      toggleLoading(loading) {
-        this.variantItemStatusElement.toggleAttribute('aria-hidden', !loading);
-        this.querySelector('.variant-remove-total .loading__spinner')?.classList.toggle('hidden', !loading);
+      toggleLoading(loading, target = this) {
+        target.querySelector('#shopping-cart-variant-item-status').toggleAttribute('aria-hidden', !loading);
+        target.querySelector('.variant-remove-total .loading__spinner')?.classList.toggle('hidden', !loading);
       }
     }
   );

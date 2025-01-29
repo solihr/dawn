@@ -1230,6 +1230,10 @@ class BulkAdd extends HTMLElement {
     this._requestStarted = requestStarted;
   }
 
+  get requestStarted() {
+    return this._requestStarted;
+  }
+
   resetQuantityInput(id) {
     const input = this.querySelector(`#Quantity-${id}`);
     input.value = input.getAttribute('value');
