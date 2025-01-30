@@ -16,7 +16,7 @@ if (!customElements.get('quick-order-list')) {
           };
         }
 
-        this.totalBar = this.dataset.section;
+        this.totalBar = this.getTotalBar();
         if (this.totalBar) {
           this.totalBarPosition = window.innerHeight - this.totalBar.offsetHeight;
 
@@ -27,6 +27,8 @@ if (!customElements.get('quick-order-list')) {
         }
 
         this.querySelector('form').addEventListener('submit', (event) => event.preventDefault());
+
+        this.handleVariantInputKeydownMulti = this.handleVariantInputKeydownMulti.bind(this);
       }
 
       connectedCallback() {
@@ -203,7 +205,7 @@ if (!customElements.get('quick-order-list')) {
             // if requests are still pending, inject loading state in response
             if (this.queue.length > 0) this.toggleLoading(true, newSection);
 
-            const total = this.querySelector('.quick-order-list__total');
+            const total = this.getTotalBar();
             if (total) {
               total.innerHTML = newSection.querySelector('.quick-order-list__total').innerHTML;
             }
@@ -242,14 +244,18 @@ if (!customElements.get('quick-order-list')) {
         });
       }
 
+      getTotalBar() {
+        return this.querySelector('.quick-order-list__total');
+      }
+
       scrollTop() {
         const { top } = this.getBoundingClientRect();
         window.scrollTo({ top: top + window.scrollY - (this.stickyHeader?.height || 0), behavior: 'instant' });
       }
 
-      scrollQuickOrderListTable() {
-        const inputTopBorder = this.variantListInput.getBoundingClientRect().top;
-        const inputBottomBorder = this.variantListInput.getBoundingClientRect().bottom;
+      scrollQuickOrderListTable(variantListInput) {
+        const inputTopBorder = variantListInput.getBoundingClientRect().top;
+        const inputBottomBorder = variantListInput.getBoundingClientRect().bottom;
 
         if (this.isListInsideModal) {
           const totalBarCrossesInput = inputBottomBorder > this.totalBar.getBoundingClientRect().top;
@@ -257,7 +263,7 @@ if (!customElements.get('quick-order-list')) {
             inputTopBorder < this.querySelector('.quick-order-list__table thead').getBoundingClientRect().bottom;
 
           if (totalBarCrossesInput || tableHeadCrossesInput) {
-            this.scrollToCenter();
+            this.scrollToCenter(variantListInput);
           }
         } else {
           const stickyHeaderBottomBorder =
@@ -281,56 +287,64 @@ if (!customElements.get('quick-order-list')) {
             stickyHeaderCrossesInput ||
             stickyHeaderScrollupCrossesInput
           ) {
-            this.scrollToCenter();
+            this.scrollToCenter(variantListInput);
           }
         }
       }
 
-      scrollToCenter() {
-        this.variantListInput.scrollIntoView({
+      scrollToCenter(variantListInput) {
+        variantListInput.scrollIntoView({
           block: 'center',
           behavior: 'smooth',
         });
       }
 
       switchVariants(event) {
-        if (event.target.tagName !== 'INPUT') {
+        const variantTarget = event.target;
+
+        if (this.allInputsArray.length !== 1) {
+          this.scrollQuickOrderListTable(variantTarget);
+        }
+
+        if (variantTarget.tagName !== 'INPUT') {
           return;
         }
 
-        this.variantListInput = event.target;
-        this.variantListInput.select();
+        variantTarget.select();
         if (this.allInputsArray.length !== 1) {
-          this.variantListInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              e.target.blur();
-              if (this.validateInput(e.target)) {
-                const currentIndex = this.allInputsArray.indexOf(e.target);
-                this.lastKey = e.shiftKey;
-                if (!e.shiftKey) {
-                  const nextIndex = currentIndex + 1;
-                  const nextVariant = this.allInputsArray[nextIndex] || this.allInputsArray[0];
-                  nextVariant.select();
-                } else {
-                  const previousIndex = currentIndex - 1;
-                  const previousVariant =
-                    this.allInputsArray[previousIndex] || this.allInputsArray[this.allInputsArray.length - 1];
-                  this.lastElement = previousVariant.dataset.index;
-                  previousVariant.select();
-                }
-              }
-            }
-          });
-
-          this.scrollQuickOrderListTable();
+          variantTarget.removeEventListener('keydown', this.handleVariantInputKeydownMulti);
+          variantTarget.addEventListener('keydown', this.handleVariantInputKeydownMulti);
         } else {
-          this.variantListInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              e.target.blur();
+          variantTarget.removeEventListener('keydown', this.handleVariantInputKeydownSingle);
+          variantTarget.addEventListener('keydown', this.handleVariantInputKeydownSingle);
+        }
+      }
+
+      handleVariantInputKeydownSingle(event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          event.target.blur();
+        }
+      }
+
+      handleVariantInputKeydownMulti(event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          event.target.blur();
+          if (this.validateInput(event.target)) {
+            const currentIndex = this.allInputsArray.indexOf(event.target);
+            if (!event.shiftKey) {
+              const nextIndex = currentIndex + 1;
+              const nextVariant = this.allInputsArray[nextIndex] || this.allInputsArray[0];
+              nextVariant.select();
+            } else {
+              const previousIndex = currentIndex - 1;
+              const previousVariant =
+                this.allInputsArray[previousIndex] || this.allInputsArray[this.allInputsArray.length - 1];
+              this.lastElement = previousVariant.dataset.index;
+              previousVariant.select();
             }
-          });
+          }
         }
       }
 
