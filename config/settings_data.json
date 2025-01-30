@@ -168,7 +168,7 @@
       "currency_code_enabled": true,
       "cart_type": "notification",
       "show_vendor": false,
-      "show_cart_note": false,
+      "show_cart_note": true,
       "cart_drawer_collection": "",
       "sections": {
         "main-password-header": {
