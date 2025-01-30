@@ -250,7 +250,12 @@ if (!customElements.get('quick-order-list')) {
 
       scrollTop() {
         const { top } = this.getBoundingClientRect();
-        window.scrollTo({ top: top + window.scrollY - (this.stickyHeader?.height || 0), behavior: 'instant' });
+
+        if (this.isListInsideModal) {
+          this.scrollIntoView();
+        } else {
+          window.scrollTo({ top: top + window.scrollY - (this.stickyHeader?.height || 0), behavior: 'instant' });
+        }
       }
 
       scrollQuickOrderListTable(variantListInput) {
