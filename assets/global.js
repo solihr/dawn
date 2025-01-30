@@ -1218,7 +1218,6 @@ class BulkAdd extends HTMLElement {
     queue.forEach((queueItem) => {
       items[parseInt(queueItem.id)] = queueItem.quantity;
     });
-    // can this possibly evict items from the queue incorrectly? what if clicking the button quickly and queue doesn't have all the quantities that this.queue has for a variant?
     this.queue = this.queue.filter((queueElement) => !queue.includes(queueElement));
 
     this.updateMultipleQty(items);

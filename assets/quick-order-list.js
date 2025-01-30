@@ -83,7 +83,7 @@ if (!customElements.get('quick-order-list')) {
       }
 
       get currentPage() {
-        return this.querySelector('.pagination-wrapper').dataset.page;
+        return this.querySelector('.pagination-wrapper')?.dataset?.page ?? '1';
       }
 
       get cartVariantsForProduct() {
@@ -193,22 +193,25 @@ if (!customElements.get('quick-order-list')) {
 
           if (section === this.dataset.section) {
             const focusedElement = document.activeElement;
-            let target = focusedElement?.dataset?.target;
-            if (target?.includes('remove')) {
-              target = focusedElement.closest('quantity-popover')?.querySelector('[data-target*="increment-"]')
+            let focusTarget = focusedElement?.dataset?.target;
+            if (focusTarget?.includes('remove')) {
+              focusTarget = focusedElement.closest('quantity-popover')?.querySelector('[data-target*="increment-"]')
                 ?.dataset.target;
             }
 
-            // if requests are still pending, inject with loading state
+            // if requests are still pending, inject loading state in response
             if (this.queue.length > 0) this.toggleLoading(true, newSection);
-            this.querySelector('.quick-order-list__total').innerHTML =
-              newSection.querySelector('.quick-order-list__total').innerHTML;
+
+            const total = this.querySelector('.quick-order-list__total');
+            if (total) {
+              total.innerHTML = newSection.querySelector('.quick-order-list__total').innerHTML;
+            }
 
             const newTable = newSection.querySelector('.quick-order-list__table');
 
             // only update variants if they are from the active page
             const shouldUpdateVariants =
-              this.currentPage === newSection.querySelector('.pagination-wrapper').dataset.page;
+              this.currentPage === (newSection.querySelector('.pagination-wrapper')?.dataset.page ?? '1');
             if (newTable && shouldUpdateVariants) {
               const table = this.querySelector('.quick-order-list__table');
 
@@ -220,7 +223,7 @@ if (!customElements.get('quick-order-list')) {
 
               table.innerHTML = newTable.innerHTML;
 
-              const newFocusTarget = this.querySelector(`[data-target='${target}']`);
+              const newFocusTarget = this.querySelector(`[data-target='${focusTarget}']`);
               if (newFocusTarget) {
                 newFocusTarget?.focus();
               } else {
@@ -327,7 +330,6 @@ if (!customElements.get('quick-order-list')) {
 
       updateMultipleQty(items) {
         this.toggleLoading(true);
-        const ids = Object.keys(items);
         const url = this.dataset.url || window.location.pathname;
 
         const body = JSON.stringify({
@@ -343,13 +345,14 @@ if (!customElements.get('quick-order-list')) {
           .then((response) => response.text())
           .then(async (state) => {
             const parsedState = JSON.parse(state);
-            this.renderSections(parsedState, ids);
+            this.renderSections(parsedState);
             publish(PUB_SUB_EVENTS.cartUpdate, {
               source: this.id,
               cartData: parsedState,
             });
           })
           .catch((e) => {
+            console.error(e);
             this.setErrorMessage(window.cartStrings.error);
           })
           .finally(() => {
