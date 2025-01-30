@@ -56,6 +56,7 @@ if (!customElements.get('quick-order-list')) {
 
             this.toggleTableLoading(true);
             await this.refresh(url.searchParams.get('page') || '1');
+            this.scrollTop();
             this.toggleTableLoading(false);
           });
         });
@@ -225,9 +226,9 @@ if (!customElements.get('quick-order-list')) {
 
               const newFocusTarget = this.querySelector(`[data-target='${focusTarget}']`);
               if (newFocusTarget) {
-                newFocusTarget?.focus();
+                newFocusTarget?.focus({ preventScroll: true });
               } else {
-                getFocusableElements(this)?.[0]?.focus();
+                getFocusableElements(this)?.[0]?.focus({ preventScroll: true });
               }
 
               this.initVariantEventListeners();
@@ -239,6 +240,11 @@ if (!customElements.get('quick-order-list')) {
             sectionElement.innerHTML = newSection.innerHTML;
           }
         });
+      }
+
+      scrollTop() {
+        const { top } = this.getBoundingClientRect();
+        window.scrollTo({ top: top + window.scrollY - (this.stickyHeader?.height || 0), behavior: 'instant' });
       }
 
       scrollQuickOrderListTable() {
