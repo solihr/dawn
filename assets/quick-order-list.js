@@ -129,10 +129,8 @@ if (!customElements.get('quick-order-list')) {
         }
       }
 
-      get sectionsToRender() {
-        if (this._sectionsToRender) return this._sectionsToRender;
-
-        return (this._sectionsToRender = [
+      getSectionsToRender() {
+        return [
           {
             id: this.id,
             section: this.dataset.section,
@@ -153,7 +151,7 @@ if (!customElements.get('quick-order-list')) {
             selector: '.drawer__inner',
             section: 'cart-drawer',
           },
-        ]);
+        ];
       }
 
       toggleTableLoading(enable) {
@@ -188,7 +186,7 @@ if (!customElements.get('quick-order-list')) {
       renderSections(parsedState) {
         const { items, sections } = parsedState;
 
-        this.sectionsToRender.forEach(({ id, selector, section }) => {
+        this.getSectionsToRender().forEach(({ id, selector, section }) => {
           const sectionElement = document.getElementById(id);
           if (!sectionElement) return;
 
@@ -359,7 +357,7 @@ if (!customElements.get('quick-order-list')) {
 
         const body = JSON.stringify({
           updates: items,
-          sections: this.sectionsToRender.map(({ section }) => section),
+          sections: this.getSectionsToRender().map(({ section }) => section),
           sections_url: `${url}?page=${this.currentPage}`,
         });
 
