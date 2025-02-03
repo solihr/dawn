@@ -285,7 +285,7 @@
           </quick-order-list-remove-all-button>
         </div>
 
-        <script type="text/javascript" data-cart-contents>
+        <script type="application/json" data-cart-contents>
           {{ cart | line_items_for: product | map: "variant_id" | json }}
         </script>
       </div>
