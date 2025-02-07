@@ -33,7 +33,7 @@
     <facet-filters-form class="facets small-hide">
       <form
         id="FacetFiltersForm"
-        class="{% if filter_type == 'horizontal' %}facets__form{% else %}facets__form-vertical{% endif %}"
+        class="{% if filter_type == 'horizontal' %}facets__form facets__form-horizontal{% else %}facets__form-vertical{% endif %}"
       >
         {%- if results.terms -%}
           <input type="hidden" name="q" value="{{ results.terms | escape }}">
@@ -49,7 +49,7 @@
             {% endif %}
           >
             {%- if filter_type == 'horizontal' and results.filters != empty -%}
-              <h2 class="facets__heading caption-large text-body" id="verticalTitle" tabindex="-1">
+              <h2 class="visually-hidden facets__heading caption-large text-body" id="verticalTitle" tabindex="-1">
                 {{ 'products.facets.filter_by_label' | t }}
               </h2>
             {%- endif -%}
@@ -123,12 +123,16 @@
                 endif
               %}
 
+              <!--  -->
+
               {% case filter.type %}
                 {% when 'boolean', 'list' %}
-                  <details
+                  <div
                     id="Details-{{ filter.param_name | escape }}-{{ section.id }}"
                     class="{% if filter_type == 'horizontal' %}disclosure-has-popup facets__disclosure{% else %} facets__disclosure-vertical{% endif %} js-filter"
                     data-index="{{ forloop.index }}"
+
+                    {% comment %}{% endcomment %}
                     {% if filter_type == 'vertical' and forloop.index == 1 %}
                       open
                     {% endif %}
@@ -294,9 +298,12 @@
                         </show-more-button>
                       {%- endif %}
                     </div>
-                  </details>
+                  </div>
+
+                  <!--  -->
+
                 {% when 'price_range' %}
-                  <details
+                  <div
                     id="Details-{{ filter.param_name | escape }}-{{ section.id }}"
                     class="{% if filter_type == 'horizontal' %}disclosure-has-popup facets__disclosure{% else %} facets__disclosure-vertical{% endif %} js-filter"
                     data-index="{{ forloop.index }}"
@@ -331,12 +338,13 @@
                         {% render 'price-facet', filter: filter, id_prefix: 'Filter-', filter_type: filter_type %}
                       </price-range>
                     </div>
-                  </details>
+                  </div>
               {% endcase %}
             {%- endfor -%}
           </div>
           {% comment %} Pills after filtes on filter type horizontal {% endcomment %}
           {%- if filter_type == 'horizontal' -%}
+            {% comment %} Result {% endcomment %}
             <div class="active-facets active-facets-desktop">
               {%- for filter in results.filters -%}
                 {%- for value in filter.active_values -%}
@@ -378,61 +386,63 @@
             </div>
           {%- endif -%}
         {% endif %}
-
         {% if results.current_vendor or results.current_type %}
           <input type="hidden" name="q" value="{{ results.current_vendor }}{{ results.current_type }}">
         {% endif %}
+        {% comment %} end Result {% endcomment %}
 
         {%- if filter_type == 'horizontal' -%}
-          {% comment %} Sorting and product count are the last elements when filter type is horizontal {% endcomment %}
-          {%- if enable_sorting -%}
-            <div class="facet-filters sorting caption">
-              <div class="facet-filters__field">
-                <h2 class="facet-filters__label caption-large text-body">
-                  <label for="SortBy">{{ 'products.facets.sort_by_label' | t }}</label>
-                </h2>
-                <div class="select">
-                  {%- assign sort_by = results.sort_by | default: results.default_sort_by -%}
-                  <select
-                    name="sort_by"
-                    class="facet-filters__sort select__select caption-large"
-                    id="SortBy"
-                    aria-describedby="a11y-refresh-page-message"
-                  >
-                    {%- for option in results.sort_options -%}
-                      <option
-                        value="{{ option.value | escape }}"
-                        {% if option.value == sort_by %}
-                          selected="selected"
-                        {% endif %}
-                      >
-                        {{ option.name | escape }}
-                      </option>
-                    {%- endfor -%}
-                  </select>
-                  <span class="svg-wrapper">
-                    {{- 'icon-caret.svg' | inline_asset_content -}}
-                  </span>
+          <div class="product-sorting">
+            {% comment %} Sorting and product count are the last elements when filter type is horizontal {% endcomment %}
+            {%- if enable_sorting -%}
+              <div class="facet-filters sorting caption">
+                <div class="facet-filters__field">
+                  <h2 class="facet-filters__label caption-large text-body">
+                    <label for="SortBy">{{ 'products.facets.sort_by_label' | t }}</label>
+                  </h2>
+                  <div class="select">
+                    {%- assign sort_by = results.sort_by | default: results.default_sort_by -%}
+                    <select
+                      name="sort_by"
+                      class="facet-filters__sort select__select caption-large"
+                      id="SortBy"
+                      aria-describedby="a11y-refresh-page-message"
+                    >
+                      {%- for option in results.sort_options -%}
+                        <option
+                          value="{{ option.value | escape }}"
+                          {% if option.value == sort_by %}
+                            selected="selected"
+                          {% endif %}
+                        >
+                          {{ option.name | escape }}
+                        </option>
+                      {%- endfor -%}
+                    </select>
+                    <span class="svg-wrapper">
+                      {{- 'icon-caret.svg' | inline_asset_content -}}
+                    </span>
+                  </div>
                 </div>
               </div>
+            {%- endif -%}
+            <div class="product-count light" role="status">
+              <h2 class="product-count__text text-body">
+                <span id="ProductCountDesktop">
+                  {%- if results.results_count -%}
+                    {{ 'templates.search.results_with_count' | t: terms: results.terms, count: results.results_count }}
+                  {%- elsif results.products_count == results.all_products_count -%}
+                    {{ 'products.facets.product_count_simple' | t: count: results.products_count }}
+                  {%- else -%}
+                    {{
+                      'products.facets.product_count'
+                      | t: product_count: results.products_count, count: results.all_products_count
+                    }}
+                  {%- endif -%}
+                </span>
+              </h2>
+              {%- render 'loading-spinner' -%}
             </div>
-          {%- endif -%}
-          <div class="product-count light" role="status">
-            <h2 class="product-count__text text-body">
-              <span id="ProductCountDesktop">
-                {%- if results.results_count -%}
-                  {{ 'templates.search.results_with_count' | t: terms: results.terms, count: results.results_count }}
-                {%- elsif results.products_count == results.all_products_count -%}
-                  {{ 'products.facets.product_count_simple' | t: count: results.products_count }}
-                {%- else -%}
-                  {{
-                    'products.facets.product_count'
-                    | t: product_count: results.products_count, count: results.all_products_count
-                  }}
-                {%- endif -%}
-              </span>
-            </h2>
-            {%- render 'loading-spinner' -%}
           </div>
         {%- endif -%}
       </form>

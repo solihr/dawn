@@ -1,0 +1,840 @@
+<div id="phido-banner-{{section.id}}" class="phido-banner">
+  <div class="page-width">
+    <div class="inner">
+      <div class="intro">
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'text' %}
+              {% if block.settings.banner_title != blank %}
+                <h2 class="banner-title" style="color:{{ block.settings.title_text_color }}">
+                  {{ block.settings.banner_title }}
+                </h2>
+                <h3 class="banner-subtitle" style="color:{{ block.settings.subtitle_text_color }}">
+                  {{ block.settings.banner_subtitle }}
+                </h3>
+              {% endif %}
+          {% endcase %}
+        {% endfor %}
+
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'image' %}
+              {% if block.settings.image_alt != blank %}
+                <div class="alt-image-incontent">
+                  <img
+                    class="img-alt"
+                    src="{{ block.settings.image_alt | image_url }}"
+                    alt="{{ block.settings.image_alt | split:'/' | last | split:'.' | first | replace:'_',' ' }}"
+                  >
+                </div>
+              {% endif %}
+          {% endcase %}
+        {% endfor %}
+        <!-- alt-image-incontent -->
+
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'button' %}
+              <div class="button-custom-wrapper">
+                {% if block.settings.button1_text != blank %}
+                  <a
+                    href="{{ block.settings.button1_link }}"
+                    class="button button-custom button-dark choose-phido"
+                  >
+                    {{ block.settings.button1_text }}
+                  </a>
+                {% endif %}
+                {% if block.settings.button2_text != blank %}
+                  <a
+                    href="{{ block.settings.button2_link }}"
+                    class="button button-custom button-light how-works"
+                  >
+                    {{ block.settings.button2_text }}
+                  </a>
+                {% endif %}
+              </div>
+          {% endcase %}
+        {% endfor %}
+        <!-- button-custom-wrapper -->
+      </div>
+      <!-- intro -->
+
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when 'image' %}
+            {% if block.settings.image_alt != blank %}
+              <div class="alt-image">
+                <img
+                  class="img-alt"
+                  src="{{ block.settings.image_alt | image_url }}"
+                  alt="{{ block.settings.image_alt | split:'/' | last | split:'.' | first | replace:'_',' ' }}"
+                >
+              </div>
+              <!-- alt-image -->
+            {% endif %}
+        {% endcase %}
+      {% endfor %}
+    </div>
+    <!-- inner -->
+  </div>
+  <!-- page-width -->
+
+  {% if section.settings.image_bg != blank %}
+    <img class="main-img" src="{{ section.settings.image_bg | image_url }} ">
+  {% endif %}
+  {% if section.settings.image_mobile != blank %}
+    <img
+      class="img-mobile"
+      src="{{ section.settings.image_mobile | image_url }}"
+      alt="{{ section.settings.image_mobile | split:'/' | last | split:'.' | first | replace:'_',' ' }}"
+    >
+  {% endif %}
+</div>
+<!-- phido-banner -->
+
+{% schema %}
+{
+  "name": "Phido Image Banner",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    // Desktop Layout ----------------------------
+    {
+      "type": "header",
+      "content": "Desktop Layout"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_bg",
+      "label": "Image Background for Dekstop"
+    },
+    {
+      "type": "select",
+      "id": "desktop_content_alignment",
+      "info": "Content alignment on Desktop",
+      "options": [
+        {
+          "value": "start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "end",
+          "label": "Right"
+        }
+      ],
+      "default": "start",
+      "label": "Desktop content alignment"
+    },
+    {
+      "type": "number",
+      "id": "section_top_padding",
+      "label": "Top Padding (%)",
+      "default": 10
+    },
+    {
+      "type": "number",
+      "id": "section_bottom_padding",
+      "label": "Bottom Padding (%)",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "label": "Content Width (%)",
+      "default": 65
+    },
+    {
+      "type": "header",
+      "content": "Background Color"
+    },
+    {
+      "type": "color",
+      "id": "banner_bg_color",
+      "label": "Banner Background Color",
+      "default": "#f3f3f3"
+    },
+    {
+      "type": "color",
+      "id": "banner_overlay",
+      "label": "Banner Overlay Color",
+      "default": "#000"
+    },
+    {
+      "type": "range",
+      "id": "banner_overlay_opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "label": "Opacity",
+      "default": 0
+    },
+
+    // Mobile layout ----------------------------
+    {
+      "type": "header",
+      "content": "Mobile layout"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Image background for mobile device"
+    },
+    {
+      "type": "select",
+      "id": "mobile_content_alignment",
+      "info": "Content alignment on Mobile",
+      "options": [
+        {
+          "value": "start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "end",
+          "label": "Right"
+        }
+      ],
+      "default": "start",
+      "label": "Mobile content alignment"
+    },
+    {
+      "type": "range",
+      "id": "mobile_content_distance",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "label": "Distance between Content and Image background on mobile view (%)",
+      "default": 0
+    }
+  ],
+  // end settings
+
+  "blocks": [
+    // Text ----------------------------
+    {
+      "type": "text",
+      "name": "Banner Text",
+      "limit": 1,
+      "settings": [
+        // Title
+        {
+          "type": "header",
+          "content": "Title"
+        },
+        {
+          "type": "textarea",
+          "id": "banner_title",
+          "label": "Title text"
+        },
+        {
+          "type": "color",
+          "id": "title_text_color",
+          "label": "Text Color",
+          "default": "#060A12"
+        },
+        {
+          "type": "number",
+          "id": "title_font_size",
+          "label": "Font Size (em)",
+          "default": 6
+        },
+        {
+          "type": "range",
+          "id": "title_font_weight",
+          "min": 300,
+          "max": 900,
+          "step": 100,
+          "label": "Font Weight",
+          "default": 900
+        },
+        {
+          "type": "select",
+          "id": "title_text_align",
+          //"info": "Text Align",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left",
+          "label": "Title text alignment on Desktop"
+        },
+        {
+          "type": "select",
+          "id": "title_text_align_mobile",
+          //"info": "Text Align",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left",
+          "label": "Title text alignment on Mobile"
+        },
+
+        // Subtitle
+        {
+          "type": "header",
+          "content": "Subitle"
+        },
+        {
+          "type": "textarea",
+          "id": "banner_subtitle",
+          "label": "Subtitle Text"
+        },
+        {
+          "type": "color",
+          "id": "subtitle_text_color",
+          "label": "Text Color",
+          "default": "#060A12"
+        },
+        {
+          "type": "number",
+          "id": "subtitle_font_size",
+          "label": "Font Size (em)",
+          "default": 3
+        },
+        {
+          "type": "range",
+          "id": "subtitle_font_weight",
+          "min": 300,
+          "max": 900,
+          "step": 100,
+          "label": "Font Weight",
+          "default": 500
+        },
+        {
+          "type": "select",
+          "id": "subtitle_text_align",
+          //"info": "Text Align",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left",
+          "label": "Subtitle text alignment on Desktop"
+        },
+        {
+          "type": "select",
+          "id": "subtitle_text_align_mobile",
+          //"info": "Text Align",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left",
+          "label": "Subtitle text alignment on Mobile"
+        }
+      ]
+    },
+
+    // Button ----------------------------
+    {
+      "type": "button",
+      "name": "Buttons",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Button 1"
+        },
+        {
+          "type": "text",
+          "id": "button1_text",
+          "label": "Button Text"
+        },
+        {
+          "type": "url",
+          "id": "button1_link",
+          "label": "Button Link",
+          "info": "Leave it blank to make it as an Add To Cart button"
+        },
+        {
+          "type": "header",
+          "content": "Button 2"
+        },
+        {
+          "type": "text",
+          "id": "button2_text",
+          "label": "Button Text"
+        },
+        {
+          "type": "url",
+          "id": "button2_link",
+          "label": "Button Link",
+          "info": "Leave it blank to make it as an Add To Cart button"
+        }
+      ]
+    },
+
+    // Image alt ---------------------------
+    {
+      "type": "image",
+      "name": "Image Alt",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image_alt",
+          "label": "Set the additional image beside the text"
+        },
+        {
+          "type": "header",
+          "content": "Image position on Desktop"
+        },
+        {
+          "type": "select",
+          "id": "image_alt_position_desktop",
+          "info": "Image Position on Desktop View",
+          "options": [
+            {
+              "value": "image_left",
+              "label": "Image left text right"
+            },
+            {
+              "value": "image_right",
+              "label": "Image right text left"
+            }
+          ],
+          "default": "image_right",
+          "label": "Image Position on Desktop View"
+        },
+        {
+          "type": "header",
+          "content": "Image position on Mobile"
+        },
+        {
+          "type": "select",
+          "id": "image_alt_position_mobile",
+          "info": "Image Position on Mobile View",
+          "options": [
+            {
+              "value": "before_content",
+              "label": "Before Content"
+            },
+            {
+              "value": "after_title",
+              "label": "After Title"
+            },
+            {
+              "value": "before_button",
+              "label": "Before Button"
+            }
+          ],
+          "default": "before_content",
+          "label": "Image Position on Mobile View"
+        }
+      ]
+    },
+
+    // Custom Liquid ---------------------------
+    {
+      "type": "liquid",
+      "name": "Custom Liquid",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "custom_liquid",
+          "label": "Custom Liquid"
+        }
+      ]
+    }
+  ],
+  // end blocks
+
+  "presets": [
+    {
+      "name": "Phido Image Banner",
+      "blocks": [
+        {
+          "type": "text"
+        },
+        {
+          "type": "button"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "liquid"
+        }
+      ]
+    }
+  ]
+  // end presets
+}
+{% endschema %}
+
+{% style %}
+    {% if template.name == "index" %}
+      {% comment %}
+      @media screen and (min-width: 750px) {
+        .header-wrapper {
+          background-color: transparent;
+        }
+        .main-nav {
+          margin-bottom: -250px !important;
+          background-color: rgb(255 255 255 / 95%);
+        }
+      }
+      {% endcomment %}
+      .section-header {
+          margin-bottom: 0 !important;
+      }
+    {% endif %}
+
+    {% for block in section.blocks %}
+
+      @media screen and (min-width: 1024px) {
+        #phido-banner-{{section.id}} .inner {
+          {% if section.settings.desktop_content_alignment %}
+            justify-content: {{ section.settings.desktop_content_alignment }};
+          {% endif %}
+          {% if section.settings.section_top_padding %}
+            padding-top: {{ section.settings.section_top_padding }}%;
+          {% endif %}
+          {% if section.settings.section_bottom_padding %}
+            padding-bottom: {{ section.settings.section_bottom_padding }}%;
+          {% endif %}
+          flex-direction: row;
+          width: 100%;
+        }
+        {% if block.settings.image_alt != blank %}
+          #phido-banner-{{section.id}} .inner {
+            flex-wrap: wrap;
+            flex-direction: row;
+            gap: 4%;
+          }
+          #phido-banner-{{section.id}} .intro,
+          #phido-banner-{{section.id}} .alt-image {
+            flex: 0 48%;
+          }
+        {% endif %}
+        {% if block.settings.image_alt_position_desktop == 'image_left' %}
+          #phido-banner-{{section.id}} .alt-image {
+            order: -1;
+          }
+        {% endif %}
+        {% if block.settings.image_alt_position_desktop == 'image_right' %}
+          #phido-banner-{{section.id}} .alt-image {
+            order: 1;
+          }
+        {% endif %}
+        #phido-banner-{{section.id}} .intro {
+          margin: 0;
+          width: 100%;
+          {% if section.settings.content_width %}
+            max-width: {{ section.settings.content_width }}%;
+          {% endif %}
+        }
+        #phido-banner-{{section.id}} .button-custom-wrapper {
+          margin-top: 30px;
+          {% if section.settings.desktop_content_alignment %}
+            display: flex;
+            /*flex-direction: row;*/
+            flex-wrap: wrap;
+            gap: 5px;
+            align-items: {{ section.settings.desktop_content_alignment }};
+            justify-content: {{ section.settings.desktop_content_alignment }};
+          {% endif %}
+        }
+
+        {% case block.type %}
+          {% when 'text' %}
+          #phido-banner-{{section.id}} .banner-title {
+            font-size: {{ block.settings.title_font_size }}em;
+            text-align: {{ block.settings.title_text_align }};
+          }
+          #phido-banner-{{section.id}} .banner-subtitle {
+            font-size: {{ block.settings.subtitle_font_size }}em;
+            text-align: {{ block.settings.subtitle_text_align }};
+          }
+        {% endcase %}
+
+        #phido-banner-{{section.id}} .img-mobile,
+        #phido-banner-{{section.id}} .alt-image-incontent {
+          display: none
+        }
+
+      } /* end min-width: 1024 */
+
+      {% comment %}
+      @media screen and (max-width: 749px) {
+        #phido-banner-{{section.id}} .inner {
+          margin-left: -1.5rem;
+          margin-right: -1.5rem;
+        }
+      }
+
+      @media screen and (max-width: 1023px) and (min-width: 750px) {
+        #phido-banner-{{section.id}} .inner {
+          margin-left: -5rem;
+          margin-right: -5rem;
+        }
+      }
+      {% endcomment %}
+
+
+      @media screen and (max-width: 1023px) {
+        #phido-banner-{{section.id}} {
+          padding: 70px 0;
+        }
+
+        {% if section.settings.mobile_content_distance %}
+          #phido-banner-{{section.id}} .page-width {
+            margin-top: {{ section.settings.mobile_content_distance }}%;
+          }
+        {% endif %}
+
+        {% if block.settings.image_alt_position_mobile != blank %}
+          #phido-banner-{{section.id}} .intro {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            {% if section.settings.mobile_content_alignment %}
+              justify-content: {{ section.settings.mobile_content_alignment }};
+            {% endif %}
+          }
+          {% if block.settings.image_alt_position_mobile == 'before_content' %}
+            #phido-banner-{{section.id}} .alt-image-incontent {
+              order: -1;
+              margin-bottom: 50px;
+            }
+          {% endif %}
+          {% if block.settings.image_alt_position_mobile == 'after_title' %}
+            #phido-banner-{{section.id}} .banner-title {
+              order: 1;
+            }
+            #phido-banner-{{section.id}} .alt-image-incontent {
+              order: 2;
+              margin-bottom: 50px;
+            }
+            #phido-banner-{{section.id}} .banner-subtitle {
+              order: 3;
+            }
+            #phido-banner-{{section.id}} .button-custom-wrapper {
+              order: 4;
+            }
+          {% endif %}
+          {% if block.settings.image_alt_position_mobile == 'before_button' %}
+            #phido-banner-{{section.id}} .banner-title {
+              order: 1;
+            }
+            #phido-banner-{{section.id}} .banner-subtitle {
+              order: 2;
+            }
+            #phido-banner-{{section.id}} .alt-image-incontent {
+              order: 3;
+              margin-top: 50px;
+            }
+            #phido-banner-{{section.id}} .button-custom-wrapper {
+              order: 4;
+            }
+          {% endif %}
+        {% endif %}
+
+        #phido-banner-{{section.id}} .banner-title {
+          font-size: 300%;
+        }
+        #phido-banner-{{section.id}} .banner-subtitle {
+          font-size: 150%;
+        }
+
+        {% case block.type %}
+          {% when 'text' %}
+          #phido-banner-{{section.id}} .banner-title {
+            text-align: {{ block.settings.title_text_align_mobile }};
+          }
+          #phido-banner-{{section.id}} .banner-subtitle {
+            text-align: {{ block.settings.subtitle_text_align_mobile }};
+          }
+        {% endcase %}
+
+        #phido-banner-{{section.id}} .alt-image {
+          display: none;
+        }
+        {% if section.settings.image_mobile != blank %}
+          #phido-banner-{{section.id}} .main-img {
+            display: none;
+          }
+        {% else %}
+          #phido-banner-{{section.id}} .main-img {
+            display: block;
+          }
+        {% endif %}
+        #phido-banner-{{section.id}} .alt-image-incontent {
+          display: block;
+        }
+        #phido-banner-{{section.id}} .button-custom-wrapper {
+          margin-top: 30px;
+          {% if section.settings.mobile_content_alignment %}
+            display: flex;
+            /*flex-direction: column;*/
+            flex-wrap: wrap;
+            gap: 5px;
+            align-items: {{ section.settings.desktop_content_alignment }};
+            justify-content: {{ section.settings.mobile_content_alignment }};
+          {% endif %}
+        }
+        #phido-banner-{{section.id}} .img-mobile {
+          width: 100%;
+          max-width: 100%;
+          order: 1;
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+
+      } /* end max-width 1023 */
+
+      #phido-banner-{{section.id}} {
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+      }
+      #phido-banner-{{section.id}} .page-width {
+        position: relative;
+        z-index: 3;
+      }
+      #phido-banner-{{section.id}}:before,
+      #phido-banner-{{section.id}}:after {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+      }
+      {% if section.settings.banner_bg_color %}
+        #phido-banner-{{section.id}}:after {
+          z-index: -1;
+          background-color: {{ section.settings.banner_bg_color }};
+        }
+      {% endif %}
+      {% if section.settings.banner_overlay %}
+        #phido-banner-{{section.id}}:before {
+          z-index: 3;
+          background-color: {{ section.settings.banner_overlay }};
+          opacity: {{ section.settings.banner_overlay_opacity }};
+        }
+      {% endif %}
+      #phido-banner-{{section.id}} .inner {
+        position: relative;
+        height: 100%;
+        display: flex;
+        align-items: center;
+      }
+      {% case block.type %}
+        {% when 'text' %}
+        #phido-banner-{{section.id}} .banner-title {
+          font-weight: {{ block.settings.title_font_weight }};
+        }
+        #phido-banner-{{section.id}} .banner-subtitle {
+          font-weight: {{ block.settings.subtitle_font_weight }};
+        }
+      {% endcase %}
+
+      #phido-banner-{{section.id}} .main-img {
+        position: absolute;
+        top: 0;
+        width: max-content;
+        /*
+        max-width: max-content;
+        min-width: fit-content;
+        min-height: -webkit-fill-available;
+        min-height: -moz-available;
+        */
+        min-height: 100%;
+        z-index: 1;
+        object-fit: cover;
+        max-width: 100%;
+      }
+
+      {% comment %}
+      @media screen and (min-width: 1440px) {
+        .main-img {
+          right: -20%;
+        }
+      }
+      @media screen and (min-width: 1024px) and (max-width: 1439px) {
+        #phido-banner-{{section.id}} .intro {
+          max-width: 65%;
+        }
+        #phido-banner-{{section.id}} .banner-title {
+          font-size: 70px !important;
+        }
+        #phido-banner-{{section.id}} .banner-subtitle {
+          font-size: 45px !important;
+        }
+        #phido-banner-{{section.id}} .main-img {
+          right: -20%;
+        }
+      }
+      {% endcomment %}
+
+      #phido-banner-{{section.id}} img {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      #phido-banner-{{section.id}} .banner-title {
+        line-height: 100%;
+        margin: 0 0 30px 0;
+      }
+      #phido-banner-{{section.id}} .banner-subtitle {
+        line-height: 120%;
+        margin: 0;
+      }
+
+  {% endfor %}
+{% endstyle %}

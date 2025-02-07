@@ -1,28 +1,96 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "image_banner": {
-      "type": "image-banner",
+    "phido_image_banner_xLwfdN": {
+      "type": "phido-image-banner",
       "blocks": {
-        "heading": {
-          "type": "heading",
-          "settings": {
-            "heading": "Image banner",
-            "heading_size": "h0"
-          }
-        },
-        "text": {
+        "text_cYUiA9": {
           "type": "text",
           "settings": {
-            "text": "Give customers details about the banner image(s) or content on the template.",
-            "text_style": "body"
+            "banner_title": "Celebrate your  <br> beloved companion",
+            "title_text_color": "#ffffff",
+            "title_font_size": 2.2,
+            "title_font_weight": 800,
+            "title_text_align": "left",
+            "title_text_align_mobile": "center",
+            "banner_subtitle": "",
+            "subtitle_text_color": "#060a12",
+            "subtitle_font_size": 2,
+            "subtitle_font_weight": 500,
+            "subtitle_text_align": "left",
+            "subtitle_text_align_mobile": "center"
           }
         },
-        "button": {
-          "type": "buttons",
+        "button_JdbWNA": {
+          "type": "button",
           "settings": {
-            "button_label_1": "Shop all",
-            "button_link_1": "shopify://collections/all",
-            "button_style_secondary_1": true,
+            "button1_text": "Choose your Phido",
+            "button1_link": "shopify://collections/all",
+            "button2_text": "",
+            "button2_link": "shopify://collections"
+          }
+        },
+        "image_z4jKXg": {
+          "type": "image",
+          "settings": {
+            "image_alt_position_desktop": "image_right",
+            "image_alt_position_mobile": "before_content"
+          }
+        }
+      },
+      "block_order": [
+        "text_cYUiA9",
+        "button_JdbWNA",
+        "image_z4jKXg"
+      ],
+      "custom_css": [
+        "#phido-banner-template--18388821770471__phido_image_banner_xLwfdN .banner-title {line-height: 120% !important;}"
+      ],
+      "settings": {
+        "image_bg": "shopify://shop_images/woman-with-a-dog.webp",
+        "desktop_content_alignment": "start",
+        "section_top_padding": 19,
+        "section_bottom_padding": 19,
+        "content_width": 40,
+        "banner_bg_color": "#ffffff",
+        "banner_overlay": "#000000",
+        "banner_overlay_opacity": 0,
+        "image_mobile": "shopify://shop_images/woman-with-a-dog-m.webp",
+        "mobile_content_alignment": "center",
+        "mobile_content_distance": 100
+      }
+    },
+    "rich_text_BazJ4b": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_dCcCxM": {
+          "type": "heading",
+          "settings": {
+            "heading": "Find Your Keys With Furry Easy",
+            "heading_size": "h1"
+          }
+        },
+        "text_bbGpww": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Discover the Phido family of smart keychains that pair seamlessly with our companion app. Quickly locate your keys with just a tap! </p>"
+          }
+        },
+        "button_jF6nLK": {
+          "type": "button",
+          "disabled": true,
+          "settings": {
+            "button_label": "Button label",
+            "button_link": "",
+            "button_style_secondary": false,
             "button_label_2": "",
             "button_link_2": "",
             "button_style_secondary_2": false
@@ -30,181 +98,410 @@
         }
       },
       "block_order": [
-        "heading",
-        "text",
-        "button"
+        "heading_dCcCxM",
+        "text_bbGpww",
+        "button_jF6nLK"
       ],
       "settings": {
-        "image_overlay_opacity": 40,
-        "image_height": "large",
-        "desktop_content_position": "bottom-center",
-        "show_text_box": false,
-        "desktop_content_alignment": "center",
-        "color_scheme": "scheme-3",
-        "mobile_content_alignment": "center",
-        "stack_images_on_mobile": false,
-        "show_text_below": false
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "",
+        "full_width": true,
+        "padding_top": 100,
+        "padding_bottom": 52
       }
     },
-    "rich_text": {
+    "image_banner_tHmMia": {
+      "type": "image-banner",
+      "custom_css": [
+        "#Banner-template--18388821770471__image_banner_tHmMia .media {background-color: transparent !important;}",
+        "@media screen and (max-width: 749px) {.media > *:not(.zoom):not(.deferred-media__poster-button) .media model-viewer {height: auto !important; }}"
+      ],
+      "settings": {
+        "image": "shopify://shop_images/smartphone-hand-phido.webp",
+        "image_overlay_opacity": 0,
+        "image_height": "medium",
+        "desktop_content_position": "middle-center",
+        "show_text_box": false,
+        "desktop_content_alignment": "center",
+        "color_scheme": "scheme-1",
+        "image_behavior": "none",
+        "mobile_content_alignment": "center",
+        "stack_images_on_mobile": true,
+        "show_text_below": true
+      }
+    },
+    "featured_collection": {
+      "type": "featured-collection",
+      "custom_css": [
+        ".center.collection__view-all {margin-top: 70px;}",
+        "h2.title.inline-richtext.h1 {text-align: center;}"
+      ],
+      "settings": {
+        "title": "Phido Collections",
+        "heading_size": "h1",
+        "description": "",
+        "show_description": false,
+        "description_style": "subtitle",
+        "collection": "all",
+        "products_to_show": 8,
+        "columns_desktop": 4,
+        "full_width": false,
+        "show_view_all": true,
+        "view_all_style": "solid",
+        "enable_desktop_slider": false,
+        "color_scheme": "scheme-1",
+        "image_ratio": "square",
+        "image_shape": "default",
+        "show_secondary_image": false,
+        "show_vendor": false,
+        "show_rating": false,
+        "quick_add": "none",
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
+        "padding_top": 100,
+        "padding_bottom": 100
+      }
+    },
+    "rich_text_ReeW7g": {
       "type": "rich-text",
       "blocks": {
-        "heading": {
+        "heading_GXWP4N": {
           "type": "heading",
           "settings": {
-            "heading": "Talk about your brand",
+            "heading": "The Perfect Gift",
             "heading_size": "h1"
-          }
-        },
-        "text": {
-          "type": "text",
-          "settings": {
-            "text": "<p>Share information about your brand with your customers. Describe a product, make announcements, or welcome customers to your store.<\/p>"
           }
         }
       },
       "block_order": [
-        "heading",
-        "text"
+        "heading_GXWP4N"
       ],
       "settings": {
-        "color_scheme": "scheme-1",
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "",
         "full_width": true,
         "padding_top": 40,
         "padding_bottom": 0
       }
     },
-    "featured_collection": {
-      "type": "featured-collection",
-      "settings": {
-        "title": "Featured products",
-        "heading_size": "h2",
-        "collection": "all",
-        "products_to_show": 8,
-        "columns_desktop": 4,
-        "color_scheme": "scheme-1",
-        "show_view_all": false,
-        "swipe_on_mobile": false,
-        "image_ratio": "adapt",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": false,
-        "columns_mobile": "2",
-        "padding_top": 28,
-        "padding_bottom": 36
-      }
-    },
-    "collage": {
-      "type": "collage",
+    "rich_text_RFLekh": {
+      "type": "rich-text",
       "blocks": {
-        "collection-0": {
-          "type": "collection",
+        "heading_M7ecDc": {
+          "type": "heading",
+          "disabled": true,
           "settings": {
-            "collection": ""
+            "heading": "Talk about your brand",
+            "heading_size": "h1"
           }
         },
-        "product": {
-          "type": "product",
+        "text_NbWKcQ": {
+          "type": "text",
           "settings": {
-            "product": "",
-            "second_image": false
+            "text": "<p>Give the gift of peace of mind. Phido helps your loved ones effortlessly find their keys while celebrating a cherished companion. Thoughtful, innovative, and perfect for every occasion – birthdays, holidays, or simply to show you care!</p>"
           }
         },
-        "collection-1": {
-          "type": "collection",
+        "button_NAefEy": {
+          "type": "button",
+          "disabled": true,
           "settings": {
-            "collection": ""
+            "button_label": "Button label",
+            "button_link": "",
+            "button_style_secondary": false,
+            "button_label_2": "",
+            "button_link_2": "",
+            "button_style_secondary_2": false
           }
         }
       },
       "block_order": [
-        "collection-0",
-        "product",
-        "collection-1"
+        "heading_M7ecDc",
+        "text_NbWKcQ",
+        "button_NAefEy"
       ],
       "settings": {
-        "heading": "Multimedia collage",
-        "heading_size": "h2",
-        "desktop_layout": "left",
-        "mobile_layout": "collage",
-        "color_scheme": "scheme-1",
-        "padding_top": 36,
-        "padding_bottom": 36
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "",
+        "full_width": true,
+        "padding_top": 16,
+        "padding_bottom": 52
       }
     },
-    "video": {
-      "type": "video",
-      "settings": {
-        "heading": "",
-        "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
-        "heading_size": "h1",
-        "description": "",
-        "full_width": false,
-        "color_scheme": "scheme-1",
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
-    },
-    "multicolumn": {
-      "type": "multicolumn",
+    "phido_image_banner_nUpt8b": {
+      "type": "phido-image-banner",
       "blocks": {
-        "column1": {
-          "type": "column",
+        "text_9jA6Uf": {
+          "type": "text",
           "settings": {
-            "title": "Column",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.<\/p>",
-            "link_label": "",
-            "link": ""
+            "banner_title": "",
+            "title_text_color": "#060a12",
+            "title_font_size": 6,
+            "title_font_weight": 900,
+            "title_text_align": "left",
+            "title_text_align_mobile": "left",
+            "banner_subtitle": "",
+            "subtitle_text_color": "#060a12",
+            "subtitle_font_size": 3,
+            "subtitle_font_weight": 500,
+            "subtitle_text_align": "left",
+            "subtitle_text_align_mobile": "left"
           }
         },
-        "column2": {
-          "type": "column",
+        "image_P6Ccgw": {
+          "type": "image",
           "settings": {
-            "title": "Column",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.<\/p>",
-            "link_label": "",
-            "link": ""
+            "image_alt_position_desktop": "image_right",
+            "image_alt_position_mobile": "before_content"
           }
         },
-        "column3": {
-          "type": "column",
+        "liquid_BUMkWM": {
+          "type": "liquid",
           "settings": {
-            "title": "Column",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.<\/p>",
-            "link_label": "",
-            "link": ""
+            "custom_liquid": ""
           }
         }
       },
       "block_order": [
-        "column1",
-        "column2",
-        "column3"
+        "text_9jA6Uf",
+        "image_P6Ccgw",
+        "liquid_BUMkWM"
       ],
       "settings": {
-        "title": "",
+        "image_bg": "shopify://shop_images/full-view_of_two_hands_holding_a_brown_paper_gift_box_tied_with_a_rope_48931.webp",
+        "desktop_content_alignment": "center",
+        "section_top_padding": 25,
+        "section_bottom_padding": 25,
+        "content_width": 10,
+        "banner_bg_color": "#ffffff",
+        "banner_overlay": "#000000",
+        "banner_overlay_opacity": 0,
+        "mobile_content_alignment": "start",
+        "mobile_content_distance": 0
+      }
+    },
+    "collapsible_content_ErtJNX": {
+      "type": "collapsible-content",
+      "blocks": {
+        "collapsible_row_mpGnJw": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "What is Phido?",
+            "icon": "check_mark",
+            "row_content": "<p>Phido is a Bluetooth smart keychain designed for pet owners. Phido celebrates your beloved friend by featuring an illustration of the breed's likeness on a fob.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_hRpd67": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "What does Phido do?",
+            "icon": "check_mark",
+            "row_content": "<p>Phido helps track your keys or phone and features adorable, breed-specific illustrations. Phido pairs with your smartphone via Bluetooth. Use the app to ring your Phido keychain when you've misplaced your keys, or double-tap Phido to find your phone.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_Wap9Lg": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Can Phido be used to track pets?",
+            "icon": "check_mark",
+            "row_content": "<p>Phido is not intended to track pets. It is designed specifically to help you find your keys or phone, but its unique design appeals to pet owners with customized breed illustrations.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_HydiAU": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "What is the Bluetooth range of Phido?",
+            "icon": "check_mark",
+            "row_content": "<p>The Bluetooth range of Phido is up to 30 feet. Walls and obstacles may reduce the effective range. If you lose your keys outside of Bluetooth range, you can use the app's \"Last Seen Location\" feature to check where Phido was last connected to your phone.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_zfxNgm": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Can Phido be customized with different breeds of animals?",
+            "icon": "check_mark",
+            "row_content": "<p>Phido uses high-end printing to represent domestic dogs and cats, as well as exotic, farm, and wild animals. However, Phido does not offer individual customization at this time, as the printing cost would not be feasible for a single custom design. If you have suggestions for future designs, we would love to hear them! We know there are many animals we haven't covered yet, and your input helps us expand our collection to better match your interests.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_hAQ7be": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "How long does the battery last, and can it be replaced?",
+            "icon": "check_mark",
+            "row_content": "<p>Phido’s battery lasts about 1.5 years, depending on usage. The battery is replaceable, ensuring long-term usability. Follow the instructions in the user manual to safely replace the battery when needed.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_hiAYjp": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "How do I pair Phido with my phone?",
+            "icon": "check_mark",
+            "row_content": "<ol><li>Download the Phido app from the App Store (iOS) or Google Play (Android).</li><li>Turn on Phido by pressing and holding the button on your keychain for 3 seconds until you hear a beep or see a flashing light.</li><li>Make sure Bluetooth is enabled on your phone.</li><li>Open the Phido app and follow the prompts to create an account if necessary.</li><li>The app will detect nearby Phido devices. Select your Phido keychain from the list.</li><li>Once connected, the app will confirm pairing, and you’re ready to use Phido.</li></ol>",
+            "page": ""
+          }
+        },
+        "collapsible_row_LUqacb": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "What phones are compatible with Phido?",
+            "icon": "check_mark",
+            "row_content": "<p>Phido works with iOS and Android devices, as long as the phone has Bluetooth 4.0 or higher. The Phido app is free to download and use. While Phido can only be paired with one phone at a time, switching between phones is easy by simply re-pairing the device.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_icnDgm": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "How do I care for my Phido keychain?",
+            "icon": "check_mark",
+            "row_content": "<p>Gently wipe your Phido keychain with a damp cloth. Avoid using harsh chemicals or submerging it in water.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_r6E3xP": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Where can I buy Phido, and what is the warranty?",
+            "icon": "check_mark",
+            "row_content": "<p>Phido is available for purchase through our<a href=\"https://phidotracker.myshopify.com/\"> <span style=\"text-decoration:underline\">official website</span></a> and selected online stores. It comes with a 1-year limited warranty covering manufacturing defects. We also offer a 30-day return policy for unused products in their original packaging.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_E9747G": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "What is the Phido Manager for?",
+            "icon": "check_mark",
+            "row_content": "<p>The Phido Manager displays a list of Phidos you have paired with the Phido app.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_RtrNjr": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "How do I edit my Phido’s settings?",
+            "icon": "check_mark",
+            "row_content": "<p>To edit your Phido’s settings, open the Phido Manager by selecting one of your Phidos on the ‘My Phidos’ screen, then go to Edit Phido Settings.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_8T4ktx": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "What are Separation Alerts?",
+            "icon": "check_mark",
+            "row_content": "<p>Separation Alerts notify you when your Phido goes out of Bluetooth range.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_Q6pkaU": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "What are Silent Zones?",
+            "icon": "check_mark",
+            "row_content": "<p>Silent Zones allow you to pause Separation Alerts in specific locations by selecting trusted WiFi networks. Once your phone connects to a designated WiFi network, alerts will be disabled, preventing unnecessary notifications in places like your home or office.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_V3HMzQ": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "What is Sleep Mode?",
+            "icon": "check_mark",
+            "row_content": "<p>Sleep Mode lets you schedule specific times when Phido should not send any alerts. This feature is useful if you have Separation Alerts turned on and want to avoid notifications during certain periods, like nighttime or work hours.Note: If you do not have Separation Alerts turned on, Phido will not send any alerts, so Sleep Mode won’t be necessary.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_jzNd7e": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Does Phido use GPS to locate my Phido?",
+            "icon": "check_mark",
+            "row_content": "<p>No, the Phido device itself does not have GPS. Phido uses Bluetooth to communicate with your phone. When Phido is within Bluetooth range, it relies on your phone’s GPS to record its location.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_kzBwBp": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Can I change the alert tone on my Phido?",
+            "icon": "check_mark",
+            "row_content": "<p>Yes, you can change the alert tone for your Phido. Go to Settings in the Phido app, select your Phido from the list, and choose Alert Tone to pick a different sound. This allows you to personalize the alert tone to your preference.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_rPPXbi": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Why does my Phido notify me that it’s out of range when it’s so close?",
+            "icon": "check_mark",
+            "row_content": "<p>Phido uses Bluetooth to communicate with your phone. Bluetooth signals can be affected by physical obstacles (like walls, metal, or thick furniture), interference from other wireless devices, and environmental factors (like electromagnetic signals from appliances). Even if your Phido is nearby, these interferences may temporarily weaken the connection, causing an out-of-range notification.<br/>To eliminate annoying notifications in common areas such as your home or office, you can create Silent Zones. Simply go to Silent Zone in the app and select a trusted WiFi network in that area. Once set, Phido will no longer send alerts when connected to those WiFi networks.</p>",
+            "page": ""
+          }
+        }
+      },
+      "block_order": [
+        "collapsible_row_mpGnJw",
+        "collapsible_row_hRpd67",
+        "collapsible_row_Wap9Lg",
+        "collapsible_row_HydiAU",
+        "collapsible_row_zfxNgm",
+        "collapsible_row_hAQ7be",
+        "collapsible_row_hiAYjp",
+        "collapsible_row_LUqacb",
+        "collapsible_row_icnDgm",
+        "collapsible_row_r6E3xP",
+        "collapsible_row_E9747G",
+        "collapsible_row_RtrNjr",
+        "collapsible_row_8T4ktx",
+        "collapsible_row_Q6pkaU",
+        "collapsible_row_V3HMzQ",
+        "collapsible_row_jzNd7e",
+        "collapsible_row_kzBwBp",
+        "collapsible_row_rPPXbi"
+      ],
+      "settings": {
+        "caption": "",
+        "heading": "FAQs",
         "heading_size": "h1",
-        "image_width": "third",
+        "heading_alignment": "center",
+        "layout": "none",
+        "color_scheme": "",
+        "container_color_scheme": "",
+        "open_first_collapsible_row": false,
         "image_ratio": "adapt",
-        "columns_desktop": 3,
-        "column_alignment": "center",
-        "background_style": "none",
-        "button_label": "",
-        "button_link": "",
-        "swipe_on_mobile": false,
-        "color_scheme": "scheme-1",
-        "columns_mobile": "1",
-        "padding_top": 36,
-        "padding_bottom": 36
+        "desktop_layout": "image_second",
+        "padding_top": 100,
+        "padding_bottom": 100
+      }
+    },
+    "custom_liquid_nnzLYJ": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<style>\n#phido-banner-template--24344134156582__phido_image_banner_xLwfdN .banner-title {\n    line-height: 140% !important;\n}\n@media screen and (max-width: 1023px) {\n  #shopify-section-template--18424438587623__phido_image_banner_xLwfdN h2.banner-title,\n#phido-banner-template--18234526302439__phido_image_banner_xLwfdN .banner-title {\n    color: #222 !important;\n  }\n    .media > *:not(.zoom):not(.deferred-media__poster-button) {\n      object-fit: cover !important;\n    }\n}\n</style>",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0
       }
     }
   },
   "order": [
-    "image_banner",
-    "rich_text",
+    "phido_image_banner_xLwfdN",
+    "rich_text_BazJ4b",
+    "image_banner_tHmMia",
     "featured_collection",
-    "collage",
-    "video",
-    "multicolumn"
+    "rich_text_ReeW7g",
+    "rich_text_RFLekh",
+    "phido_image_banner_nUpt8b",
+    "collapsible_content_ErtJNX",
+    "custom_liquid_nnzLYJ"
   ]
 }

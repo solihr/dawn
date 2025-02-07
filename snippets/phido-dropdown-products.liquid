@@ -1,0 +1,57 @@
+<span><b>Choose Your Phido</b></span>
+<div class="product-dropdown-wrapper">
+  <div class="product-title">{{ product.title }}</div>
+  <select id="product-dropdown" onChange="window.location.href=href=this.value">
+    <option value="Choose an option" selected="selected" disabled="true">--</option>
+    {% for product in collections.all.products %}
+      <option value="{{ product.url }}">{{ product.title }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+{% style %}
+  .product-dropdown-wrapper {
+    position: relative;
+    height: 50px;
+    overflow: hidden;
+    border: 1px solid #222;
+  }
+  .product-dropdown-wrapper .product-title {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    font-size: smaller;
+    font-weight: 400;
+    background-color: #fff;
+    height: 100%;
+    width: 100%;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+  }
+  select#product-dropdown {
+    width: 100%;
+    max-width: 100%;
+    height: 50px;
+    padding: 5px 35px 5px 5px;
+    font-size: 0.75em;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /*background: url(https://stackoverflow.com/favicon.ico) 96% / 15% no-repeat #eee;*/
+  }
+  /* CAUTION: IE hackery ahead */
+  select#product-dropdown::-ms-expand {
+    display: none; /* remove default arrow on ie10 and ie11 */
+  }
+
+  /* target Internet Explorer 9 to undo the custom arrow */
+  @media screen and (min-width: 0\0) {
+    select#product-dropdown {
+      background: none\9;
+      padding: 5px\9;
+    }
+  }
+{% endstyle %}
