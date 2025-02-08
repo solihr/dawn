@@ -187,7 +187,7 @@
         "column_77jjxR": {
           "type": "column",
           "settings": {
-            "image": "shopify://shop_images/Ring.svg",
+            "image": "shopify://shop_images/rings.svg",
             "title": "Rings",
             "text": "<p>Your phone even in silent mode</p>",
             "link_label": "",
@@ -197,7 +197,7 @@
         "column_gPwXAG": {
           "type": "column",
           "settings": {
-            "image": "shopify://shop_images/Track.svg",
+            "image": "shopify://shop_images/tracks.svg",
             "title": "Track",
             "text": "<p>Locate keys to where you had them last </p>",
             "link_label": "",
@@ -207,7 +207,7 @@
         "column_XEApEY": {
           "type": "column",
           "settings": {
-            "image": "shopify://shop_images/Alerts.svg",
+            "image": "shopify://shop_images/alerts.svg",
             "title": "Alerts",
             "text": "<p>Never leave your keys behind</p>",
             "link_label": "",
@@ -217,7 +217,7 @@
         "column_CmJ7Hj": {
           "type": "column",
           "settings": {
-            "image": "shopify://shop_images/Replacable.svg",
+            "image": "shopify://shop_images/battery-replace.svg",
             "title": "Replaceable Battery",
             "text": "<p>Just swap it out</p>",
             "link_label": "",
@@ -227,7 +227,7 @@
         "column_RcQfmt": {
           "type": "column",
           "settings": {
-            "image": "shopify://shop_images/Water.svg",
+            "image": "shopify://shop_images/water-resistant.svg",
             "title": "Water Resistant",
             "text": "<p>Don’t sweat the splashes</p>",
             "link_label": "",
@@ -237,7 +237,7 @@
         "column_pcrwwx": {
           "type": "column",
           "settings": {
-            "image": "shopify://shop_images/Android.svg",
+            "image": "shopify://shop_images/android.svg",
             "title": "Android Ready",
             "text": "<p>Works with Android</p>",
             "link_label": "",
@@ -247,7 +247,7 @@
         "column_Wwfe9H": {
           "type": "column",
           "settings": {
-            "image": "shopify://shop_images/IOS.svg",
+            "image": "shopify://shop_images/ios.svg",
             "title": "iOS Ready",
             "text": "<p>Works with iPhone</p>",
             "link_label": "",
@@ -257,7 +257,7 @@
         "column_UnFMx4": {
           "type": "column",
           "settings": {
-            "image": "shopify://shop_images/Sleep.svg",
+            "image": "shopify://shop_images/sleep-mode.svg",
             "title": "Sleep Mode",
             "text": "<p>Create sleep schedules to conserve power</p>",
             "link_label": "",
@@ -267,7 +267,7 @@
         "column_HbFrfr": {
           "type": "column",
           "settings": {
-            "image": "shopify://shop_images/Selfie.svg",
+            "image": "shopify://shop_images/selfie.svg",
             "title": "Selfie",
             "text": "<p>Phone camera remote control</p>",
             "link_label": "",
@@ -277,7 +277,7 @@
         "column_y6iVLb": {
           "type": "column",
           "settings": {
-            "image": "shopify://shop_images/Silent.svg",
+            "image": "shopify://shop_images/silent-zone.svg",
             "title": "Silent Zones",
             "text": "<p>No separation alerts in known WiFi networks</p>",
             "link_label": "",
@@ -351,7 +351,6 @@
       ],
       "disabled": true,
       "settings": {
-        "image": "shopify://shop_images/Phido_crop.webp",
         "height": "adapt",
         "desktop_image_width": "medium",
         "layout": "text_first",

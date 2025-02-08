@@ -57,8 +57,8 @@
       "settings": {
         "image_bg": "shopify://shop_images/woman-with-a-dog.webp",
         "desktop_content_alignment": "start",
-        "section_top_padding": 19,
-        "section_bottom_padding": 19,
+        "section_top_padding": 21,
+        "section_bottom_padding": 21,
         "content_width": 40,
         "banner_bg_color": "#ffffff",
         "banner_overlay": "#000000",
@@ -486,7 +486,7 @@
     "custom_liquid_nnzLYJ": {
       "type": "custom-liquid",
       "settings": {
-        "custom_liquid": "<style>\n#phido-banner-template--24344134156582__phido_image_banner_xLwfdN .banner-title {\n    line-height: 140% !important;\n}\n@media screen and (max-width: 1023px) {\n  #shopify-section-template--18424438587623__phido_image_banner_xLwfdN h2.banner-title,\n#phido-banner-template--18234526302439__phido_image_banner_xLwfdN .banner-title {\n    color: #222 !important;\n  }\n    .media > *:not(.zoom):not(.deferred-media__poster-button) {\n      object-fit: cover !important;\n    }\n}\n</style>",
+        "custom_liquid": "<style>\n#phido-banner-template--24344169054502__phido_image_banner_xLwfdN .banner-title {\n    line-height: 130% !important;\n}\n@media screen and (max-width: 1023px) {\n  #shopify-section-template--18424438587623__phido_image_banner_xLwfdN h2.banner-title,\n#phido-banner-template--18234526302439__phido_image_banner_xLwfdN .banner-title {\n    color: #222 !important;\n  }\n    .media > *:not(.zoom):not(.deferred-media__poster-button) {\n      object-fit: cover !important;\n    }\n}\n</style>",
         "color_scheme": "",
         "padding_top": 0,
         "padding_bottom": 0
