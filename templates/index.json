@@ -230,56 +230,20 @@
         "padding_bottom": 52
       }
     },
-    "phido_image_banner_nUpt8b": {
-      "type": "phido-image-banner",
-      "blocks": {
-        "text_9jA6Uf": {
-          "type": "text",
-          "settings": {
-            "banner_title": "",
-            "title_text_color": "#060a12",
-            "title_font_size": 6,
-            "title_font_weight": 900,
-            "title_text_align": "left",
-            "title_text_align_mobile": "left",
-            "banner_subtitle": "",
-            "subtitle_text_color": "#060a12",
-            "subtitle_font_size": 3,
-            "subtitle_font_weight": 500,
-            "subtitle_text_align": "left",
-            "subtitle_text_align_mobile": "left"
-          }
-        },
-        "image_P6Ccgw": {
-          "type": "image",
-          "settings": {
-            "image_alt_position_desktop": "image_right",
-            "image_alt_position_mobile": "before_content"
-          }
-        },
-        "liquid_BUMkWM": {
-          "type": "liquid",
-          "settings": {
-            "custom_liquid": ""
-          }
-        }
-      },
-      "block_order": [
-        "text_9jA6Uf",
-        "image_P6Ccgw",
-        "liquid_BUMkWM"
-      ],
+    "image_banner_rQB6xX": {
+      "type": "image-banner",
       "settings": {
-        "image_bg": "shopify://shop_images/full-view_of_two_hands_holding_a_brown_paper_gift_box_tied_with_a_rope_48931.webp",
+        "image": "shopify://shop_images/full-view_of_two_hands_holding_a_brown_paper_gift_box_tied_with_a_rope_48931.webp",
+        "image_overlay_opacity": 0,
+        "image_height": "medium",
+        "desktop_content_position": "middle-center",
+        "show_text_box": true,
         "desktop_content_alignment": "center",
-        "section_top_padding": 25,
-        "section_bottom_padding": 25,
-        "content_width": 10,
-        "banner_bg_color": "#ffffff",
-        "banner_overlay": "#000000",
-        "banner_overlay_opacity": 0,
-        "mobile_content_alignment": "start",
-        "mobile_content_distance": 0
+        "color_scheme": "",
+        "image_behavior": "none",
+        "mobile_content_alignment": "center",
+        "stack_images_on_mobile": true,
+        "show_text_below": true
       }
     },
     "collapsible_content_ErtJNX": {
@@ -371,7 +335,7 @@
           "settings": {
             "heading": "Where can I buy Phido, and what is the warranty?",
             "icon": "check_mark",
-            "row_content": "<p>Phido is available for purchase through our<a href=\"https://phidotracker.myshopify.com/\"> <span style=\"text-decoration:underline\">official website</span></a> and selected online stores. It comes with a 1-year limited warranty covering manufacturing defects. We also offer a 30-day return policy for unused products in their original packaging.</p>",
+            "row_content": "<p>Phido is available for purchase through our<a href=\"/collections/all\" title=\"All products\"> <span style=\"text-decoration:underline\">official website</span></a> and selected online stores. It comes with a 1-year limited warranty covering manufacturing defects. We also offer a 30-day return policy for unused products in their original packaging.</p>",
             "page": ""
           }
         },
@@ -486,7 +450,7 @@
     "custom_liquid_nnzLYJ": {
       "type": "custom-liquid",
       "settings": {
-        "custom_liquid": "<style>\n#phido-banner-template--24344169054502__phido_image_banner_xLwfdN .banner-title {\n    line-height: 130% !important;\n}\n@media screen and (max-width: 1023px) {\n  #shopify-section-template--18424438587623__phido_image_banner_xLwfdN h2.banner-title,\n#phido-banner-template--18234526302439__phido_image_banner_xLwfdN .banner-title {\n    color: #222 !important;\n  }\n    .media > *:not(.zoom):not(.deferred-media__poster-button) {\n      object-fit: cover !important;\n    }\n}\n</style>",
+        "custom_liquid": "<style>\n.banner-title {\n    line-height: 130% !important;\n}\n@media screen and (max-width: 1023px) {\n  h2.banner-title,\n.banner-title {\n    color: #222 !important;\n  }\n    .media > *:not(.zoom):not(.deferred-media__poster-button) {\n      object-fit: cover !important;\n    }\n}\n</style>",
         "color_scheme": "",
         "padding_top": 0,
         "padding_bottom": 0
@@ -500,7 +464,7 @@
     "featured_collection",
     "rich_text_ReeW7g",
     "rich_text_RFLekh",
-    "phido_image_banner_nUpt8b",
+    "image_banner_rQB6xX",
     "collapsible_content_ErtJNX",
     "custom_liquid_nnzLYJ"
   ]
